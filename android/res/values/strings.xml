@@ -3,4 +3,7 @@
 
     <string name="app_name">Betelgeuse</string>
 
+    <item name="adViewId" type="id" />
+
+
 </resources>
