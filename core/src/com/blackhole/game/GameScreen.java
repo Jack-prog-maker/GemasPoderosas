@@ -20,7 +20,6 @@ public class GameScreen extends ScreenAdapter {
     private Abismo abismo;
 
     private Sound coinSound;
-    private Sound jumpSound;
     private Sound loseSound;
 
     // == constructors ==
@@ -50,15 +49,15 @@ public class GameScreen extends ScreenAdapter {
 
 
 
-        abismo = new Abismo(game, listener, assetManager);
+
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        GdxUtils.clearScreen();
 
-        abismo.update(delta);
-        abismo.render(delta);
+
+
     }
 
     @Override

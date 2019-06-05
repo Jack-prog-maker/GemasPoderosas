@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
+import com.blackhole.game.common.SoundListener;
 
 
 public class LoadingScreen extends ScreenAdapter {
@@ -25,6 +25,7 @@ public class LoadingScreen extends ScreenAdapter {
     // == attributes ==
     private final GameBase game;
     private final AssetManager assetManager;
+    private SoundListener listener;
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -32,7 +33,7 @@ public class LoadingScreen extends ScreenAdapter {
     private SpriteBatch batch;
 
     private float progress;
-    private float waitTime = 0.75f;
+    private float waitTime = 0.95f;
 
     private boolean changeScreen;
 
@@ -44,7 +45,9 @@ public class LoadingScreen extends ScreenAdapter {
 
     private Texture intro;
 
-    private Animation<TextureRegion> carregando;
+
+
+    private Animation<TextureRegion> fundo;
     private float elapsed;
 
 
@@ -52,6 +55,7 @@ public class LoadingScreen extends ScreenAdapter {
     public LoadingScreen(GameBase game) {
         this.game = game;
         assetManager = game.getAssetManager();
+
     }
 
 
@@ -67,6 +71,13 @@ public class LoadingScreen extends ScreenAdapter {
         alturaDispositivo  = VIRTUAL_HEIGHT;
 
         intro = new Texture("logo.png");
+        fundo = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("loading.gif").read());
+
+        assetManager.load(AssetDescriptors.FONT);
+        assetManager.load(AssetDescriptors.SKIN);
+        assetManager.load(AssetDescriptors.COIN);
+        assetManager.load(AssetDescriptors.LOSE);
+
 
 
 
@@ -81,20 +92,21 @@ public class LoadingScreen extends ScreenAdapter {
         update(delta);
 
         camera.update();
-        elapsed += Gdx.graphics.getDeltaTime();
 
         // Limpar frames anteriores
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         viewport.apply();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+
         batch.draw(intro,  larguraDispositivo / 2 - 400 / 2, alturaDispositivo / 2, 400, 250);
+        batch.draw(fundo.getKeyFrame(elapsed),  larguraDispositivo / 2 - 400 / 2, alturaDispositivo / 2, 400, 250);
 
         batch.end();
 
 
         if (changeScreen) {
-            game.setScreen(new GameScreen(game));
+            game.setScreen(new Abismo(game));
         }
     }
 
@@ -120,6 +132,7 @@ public class LoadingScreen extends ScreenAdapter {
 
         if (assetManager.update()) {
             waitTime -= delta;
+            elapsed += delta;
 
             if (waitTime <= 0) {
                 changeScreen = true;

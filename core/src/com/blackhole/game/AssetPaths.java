@@ -3,7 +3,7 @@ package com.blackhole.game;
 
 public class AssetPaths {
 
-    public static final String FONT = "ui/fonts/font.fnt";
+    public static final String FONT = "ui/fonts/broadway_32.fnt";
 
     public static final String SKIN = "ui/skin.json";
 

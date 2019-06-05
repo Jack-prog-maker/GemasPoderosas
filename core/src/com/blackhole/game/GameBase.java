@@ -25,6 +25,8 @@ public abstract class GameBase extends Game {
 
 
         assetManager = new AssetManager();
+        assetManager.getLogger().setLevel(Logger.DEBUG);
+
         batch = new SpriteBatch();
         postCreate();
     }

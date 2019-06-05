@@ -1,8 +1,6 @@
 package com.blackhole.game;
 
-/**
- * Created by goran on 12/10/2016.
- */
+
 
 public class ButtonStyleNames {
 
