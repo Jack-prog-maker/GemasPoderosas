@@ -306,7 +306,7 @@ public class Abismo extends ScreenAdapter {
 //        hudStage.setDebugAll(true);
 
         Gdx.input.setInputProcessor(hudStage);
-
+        posicaoAntG = 1200;
         posicaoI = 1100;
         posicao1 = 1300;
         posicao2 = 1500;
@@ -342,7 +342,7 @@ public class Abismo extends ScreenAdapter {
         posicaom10 = 5000;
 
         tamanhaD = 70;
-        mpass = new Vector3(Gdx.graphics.getWidth() / 2, 100, 0);
+        mpass = new Vector3(Gdx.graphics.getWidth() / 2, 200, 0);
 
 
         espacoEntreCanos = 300;
@@ -503,6 +503,7 @@ public class Abismo extends ScreenAdapter {
     public void restart() {
         gameState = GameState.READY;
         vel = 400;
+        posicaoAntG = numeroRandomico.nextInt(1300) + (1100);
         posicaoI = numeroRandomico.nextInt(1300) + (1100);
         posicao1 = numeroRandomico.nextInt(1600) + (1300);
         posicao2 = numeroRandomico.nextInt(1800) + (1500);
@@ -569,7 +570,7 @@ public class Abismo extends ScreenAdapter {
 
     private void atualizarp(float deltaTime, Viewport viewport) {
         if (Gdx.input.isTouched()) {
-            mpass.set(Gdx.input.getX(), 100, 0);
+            mpass.set(Gdx.input.getX(), 200, 0);
             viewport.unproject(mpass);
         }
 
@@ -633,6 +634,7 @@ public class Abismo extends ScreenAdapter {
                     ) {
 
                 posicaoI = numeroRandomico.nextInt(1300) + (1100);
+                posicaoAntG = numeroRandomico.nextInt(1300) + (1100);
                 posicao1 = numeroRandomico.nextInt(1600) + (1300);
                 posicao2 = numeroRandomico.nextInt(1800) + (1500);
                 posicao3 = numeroRandomico.nextInt(2200) + (2000);
@@ -677,7 +679,7 @@ public class Abismo extends ScreenAdapter {
                 alturaEntreCanosRandomica8 = numeroRandomico.nextInt(400) - 200;
                 alturaEntreCanosRandomica9 = numeroRandomico.nextInt(400) - 200;
                 alturaEntreCanosRandomica10 = numeroRandomico.nextInt(400) - 200;
-                vel = vel + 20;
+                vel = vel + 100;
 
 
             }
@@ -750,13 +752,13 @@ public class Abismo extends ScreenAdapter {
             batch.draw(antG, larguraDispositivo / 2 + alturaEntreCanosRandomica0, posicaoAntG, 100, 100);
         }
 
-        batch.draw(BadeSprite, mpass.x, mpass.y);
+        batch.draw(BadeSprite, mpass.x, 200);
 
 
 
     }
     private void drawFormas(float delta){
-        badecirculo.set(mpass.x + Bade.getWidth() / 2, mpass.y + Bade.getHeight() / 2, 30);
+        badecirculo.set(mpass.x + Bade.getWidth() / 2, 200 + Bade.getHeight() / 2, 30);
 
         circulantg.set(larguraDispositivo / 2 + alturaEntreCanosRandomica0, posicaoAntG, 30);
 
@@ -780,7 +782,7 @@ public class Abismo extends ScreenAdapter {
         );
 
         retanguloCanoTopoI = new Rectangle(
-                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica0, posicao1,
+                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica1, posicao1,
                 tamanhaD, tamanhaD
         );
 
@@ -790,7 +792,7 @@ public class Abismo extends ScreenAdapter {
         );
 
         retanguloCanoTopo1 = new Rectangle(
-                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica1, posicao3,
+                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica2, posicao3,
                 tamanhaD, tamanhaD
         );
 
@@ -800,7 +802,7 @@ public class Abismo extends ScreenAdapter {
         );
 
         retanguloCanoTopo2 = new Rectangle(
-                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica2, posicao5,
+                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica3, posicao5,
                 tamanhaD, tamanhaD
         );
 
@@ -810,7 +812,7 @@ public class Abismo extends ScreenAdapter {
         );
 
         retanguloCanoTopo3 = new Rectangle(
-                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica3, posicao7,
+                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica4, posicao7,
                 tamanhaD, tamanhaD
         );
 
@@ -820,7 +822,7 @@ public class Abismo extends ScreenAdapter {
         );
 
         retanguloCanoTopo4 = new Rectangle(
-                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica4, posicao9,
+                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica5, posicao9,
                 tamanhaD, tamanhaD
         );
 
@@ -830,7 +832,7 @@ public class Abismo extends ScreenAdapter {
         );
 
         retanguloCanoTopo5 = new Rectangle(
-                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica5, posicao11,
+                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica6, posicao11,
                 tamanhaD, tamanhaD
         );
 
@@ -840,7 +842,7 @@ public class Abismo extends ScreenAdapter {
         );
 
         retanguloCanoTopo6 = new Rectangle(
-                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica6, posicao13,
+                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica7, posicao13,
                 tamanhaD, tamanhaD
         );
 
@@ -850,7 +852,7 @@ public class Abismo extends ScreenAdapter {
         );
 
         retanguloCanoTopo7 = new Rectangle(
-                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica7, posicao15,
+                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica8, posicao15,
                 tamanhaD, tamanhaD
         );
 
@@ -860,7 +862,7 @@ public class Abismo extends ScreenAdapter {
         );
 
         retanguloCanoTopo8 = new Rectangle(
-                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica8, posicao17,
+                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica9, posicao17,
                 tamanhaD, tamanhaD
         );
 
@@ -870,7 +872,7 @@ public class Abismo extends ScreenAdapter {
         );
 
         retanguloCanoTopo9 = new Rectangle(
-                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica9, posicao19,
+                larguraDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica10, posicao19,
                 tamanhaD, tamanhaD
         );
 

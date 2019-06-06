@@ -33,7 +33,7 @@ import static android.provider.UserDictionary.Words.APP_ID;
 public class AndroidLauncher extends AndroidApplication implements AdController {
 
 
-    private static final String ID_APP = "ca-app-pub-3940256099942544~3347511713";
+    private static final String ID_APP = "ca-app-pub-2180899685318678~8753015152";
     private InterstitialAd interstitialAd;
     private AdView bannerAdView;
 

@@ -33,7 +33,7 @@ public class LoadingScreen extends ScreenAdapter {
     private SpriteBatch batch;
 
     private float progress;
-    private float waitTime = 0.95f;
+    private float waitTime = 0.75f;
 
     private boolean changeScreen;
 
@@ -71,7 +71,6 @@ public class LoadingScreen extends ScreenAdapter {
         alturaDispositivo  = VIRTUAL_HEIGHT;
 
         intro = new Texture("logo.png");
-        fundo = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("loading.gif").read());
 
         assetManager.load(AssetDescriptors.FONT);
         assetManager.load(AssetDescriptors.SKIN);
@@ -100,7 +99,6 @@ public class LoadingScreen extends ScreenAdapter {
         batch.begin();
 
         batch.draw(intro,  larguraDispositivo / 2 - 400 / 2, alturaDispositivo / 2, 400, 250);
-        batch.draw(fundo.getKeyFrame(elapsed),  larguraDispositivo / 2 - 400 / 2, alturaDispositivo / 2, 400, 250);
 
         batch.end();
 
@@ -132,7 +130,6 @@ public class LoadingScreen extends ScreenAdapter {
 
         if (assetManager.update()) {
             waitTime -= delta;
-            elapsed += delta;
 
             if (waitTime <= 0) {
                 changeScreen = true;
