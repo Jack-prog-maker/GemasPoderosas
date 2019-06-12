@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.blackhole.game.ButtonStyleNames;
-import com.blackhole.game.RegionNames;
+import com.blackhole.game.Assets.ButtonStyleNames;
+import com.blackhole.game.Assets.RegionNames;
 import com.blackhole.game.common.GameManager;
 
 

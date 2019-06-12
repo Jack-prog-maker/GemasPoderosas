@@ -1,5 +1,7 @@
 package com.blackhole.game;
 
+import com.blackhole.game.game.LoadingScreen;
+
 public class BadeSpace extends GameBase {
 
 
@@ -10,7 +12,6 @@ public class BadeSpace extends GameBase {
 
     @Override
     public void postCreate() {
-        getAdController().showBanner();
         setScreen(new LoadingScreen(this));
     }
 

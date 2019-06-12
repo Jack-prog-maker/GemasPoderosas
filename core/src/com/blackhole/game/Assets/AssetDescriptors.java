@@ -1,4 +1,4 @@
-package com.blackhole.game;
+package com.blackhole.game.Assets;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.audio.Sound;
@@ -12,6 +12,9 @@ public class AssetDescriptors {
 
     public static final AssetDescriptor<BitmapFont> FONT =
             new AssetDescriptor<BitmapFont>(AssetPaths.FONT, BitmapFont.class);
+
+    public static final AssetDescriptor<TextureAtlas> GAME_PLAY =
+            new AssetDescriptor<TextureAtlas>(AssetPaths.GAME_PLAY, TextureAtlas.class);
 
     public static final AssetDescriptor<Skin> SKIN =
             new AssetDescriptor<Skin>(AssetPaths.SKIN, Skin.class);

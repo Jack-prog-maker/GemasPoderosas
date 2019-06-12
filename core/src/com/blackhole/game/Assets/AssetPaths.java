@@ -1,7 +1,9 @@
-package com.blackhole.game;
+package com.blackhole.game.Assets;
 
 
 public class AssetPaths {
+
+    public static final String GAME_PLAY = "GamePlay/gameplay.atlas";
 
     public static final String FONT = "ui/fonts/font.fnt";
 

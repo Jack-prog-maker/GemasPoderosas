@@ -1,4 +1,4 @@
-package com.blackhole.game;
+package com.blackhole.game.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -6,14 +6,17 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.blackhole.game.Assets.AssetDescriptors;
+import com.blackhole.game.Assets.RegionNames;
+import com.blackhole.game.GameBase;
 import com.blackhole.game.common.SoundListener;
+import com.blackhole.game.game.Abismo;
 
 
 public class LoadingScreen extends ScreenAdapter {
@@ -43,12 +46,8 @@ public class LoadingScreen extends ScreenAdapter {
     private float larguraDispositivo;
     private float alturaDispositivo;
 
-    private Texture intro;
+    private Texture logo;
 
-
-
-    private Animation<TextureRegion> fundo;
-    private float elapsed;
 
 
     // == constructors ==
@@ -70,17 +69,13 @@ public class LoadingScreen extends ScreenAdapter {
         larguraDispositivo = VIRTUAL_WIDTH;
         alturaDispositivo  = VIRTUAL_HEIGHT;
 
-        intro = new Texture("logo.png");
-
         assetManager.load(AssetDescriptors.FONT);
+        assetManager.load(AssetDescriptors.GAME_PLAY);
         assetManager.load(AssetDescriptors.SKIN);
         assetManager.load(AssetDescriptors.COIN);
         assetManager.load(AssetDescriptors.LOSE);
 
-
-
-
-
+        logo = new Texture("logo.png");
 
 
 
@@ -98,7 +93,7 @@ public class LoadingScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        batch.draw(intro,  larguraDispositivo / 2 - 400 / 2, alturaDispositivo / 2, 400, 250);
+        batch.draw(logo,  larguraDispositivo / 2 - 400 / 2, alturaDispositivo / 2, 400, 250);
 
         batch.end();
 

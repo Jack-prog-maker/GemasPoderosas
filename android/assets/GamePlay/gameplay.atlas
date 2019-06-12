@@ -1,0 +1,145 @@
+gameplay.png
+size: 894, 1736
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+badegema1
+  rotate: false
+  xy: 422, 360
+  size: 236, 238
+  orig: 236, 238
+  offset: 0, 0
+  index: -1
+badegema2
+  rotate: false
+  xy: 236, 598
+  size: 236, 238
+  orig: 236, 238
+  offset: 0, 0
+  index: -1
+badegema3
+  rotate: false
+  xy: 0, 598
+  size: 236, 238
+  orig: 236, 238
+  offset: 0, 0
+  index: -1
+badegema4
+  rotate: false
+  xy: 658, 360
+  size: 236, 238
+  orig: 236, 238
+  offset: 0, 0
+  index: -1
+baldegema1
+  rotate: false
+  xy: 694, 0
+  size: 179, 179
+  orig: 179, 179
+  offset: 0, 0
+  index: -1
+baldegema2
+  rotate: false
+  xy: 0, 179
+  size: 179, 179
+  orig: 179, 179
+  offset: 0, 0
+  index: -1
+baldegema3
+  rotate: false
+  xy: 179, 179
+  size: 179, 179
+  orig: 179, 179
+  offset: 0, 0
+  index: -1
+baldegema4
+  rotate: false
+  xy: 515, 0
+  size: 179, 179
+  orig: 179, 179
+  offset: 0, 0
+  index: -1
+botao1
+  rotate: false
+  xy: 211, 360
+  size: 211, 181
+  orig: 211, 181
+  offset: 0, 0
+  index: -1
+botao2
+  rotate: false
+  xy: 358, 179
+  size: 211, 181
+  orig: 211, 181
+  offset: 0, 0
+  index: -1
+botao3
+  rotate: false
+  xy: 569, 179
+  size: 211, 181
+  orig: 211, 181
+  offset: 0, 0
+  index: -1
+botao4
+  rotate: false
+  xy: 0, 360
+  size: 211, 182
+  orig: 211, 182
+  offset: 0, 0
+  index: -1
+fundo
+  rotate: false
+  xy: 0, 1110
+  size: 626, 626
+  orig: 626, 626
+  offset: 0, 0
+  index: -1
+gema1
+  rotate: false
+  xy: 91, 0
+  size: 125, 158
+  orig: 125, 158
+  offset: 0, 0
+  index: -1
+gema2
+  rotate: false
+  xy: 216, 0
+  size: 137, 130
+  orig: 137, 130
+  offset: 0, 0
+  index: -1
+gema3
+  rotate: false
+  xy: 353, 0
+  size: 162, 161
+  orig: 162, 161
+  offset: 0, 0
+  index: -1
+gema4
+  rotate: false
+  xy: 0, 0
+  size: 91, 161
+  orig: 91, 161
+  offset: 0, 0
+  index: -1
+logo
+  rotate: false
+  xy: 244, 837
+  size: 440, 273
+  orig: 440, 273
+  offset: 0, 0
+  index: -1
+moverD
+  rotate: false
+  xy: 472, 598
+  size: 244, 239
+  orig: 244, 239
+  offset: 0, 0
+  index: -1
+moverE
+  rotate: false
+  xy: 0, 837
+  size: 244, 239
+  orig: 244, 239
+  offset: 0, 0
+  index: -1
