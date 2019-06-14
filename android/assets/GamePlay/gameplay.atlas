@@ -4,28 +4,28 @@ format: RGBA8888
 filter: Linear,Linear
 repeat: none
 badegema1
-  rotate: false
+  rotate: true
   xy: 422, 360
   size: 236, 238
   orig: 236, 238
   offset: 0, 0
   index: -1
 badegema2
-  rotate: false
+  rotate: true
   xy: 236, 598
   size: 236, 238
   orig: 236, 238
   offset: 0, 0
   index: -1
 badegema3
-  rotate: false
+  rotate: true
   xy: 0, 598
   size: 236, 238
   orig: 236, 238
   offset: 0, 0
   index: -1
 badegema4
-  rotate: false
+  rotate: true
   xy: 658, 360
   size: 236, 238
   orig: 236, 238

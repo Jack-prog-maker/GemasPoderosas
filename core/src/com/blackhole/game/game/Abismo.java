@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -116,17 +117,23 @@ public class Abismo extends ScreenAdapter {
 
     private Sound coinSound;
     private Sound loseSound;
+    private Sound jumpSound;
 
     private final AssetManager assetManager;
 
     private Stage hudStage;
+    private Stage cenario;
+    private Image jogador;
     private MenuOverlay menuOverlay;
     private GameOverOverlay gameOverOverlay;
 
     private float vel;
-    private float botaon;
+    private float velM1;
+    private float velM2;
+    private float velM3;
+    private float velM4;
 
-    private float botaogema = GameConfig.BOTAOGEMA_SIZE;
+    private float botaon;
 
     private final GlyphLayout layout = new GlyphLayout();
 
@@ -153,9 +160,27 @@ public class Abismo extends ScreenAdapter {
     private Rectangle controleRE;
     private Rectangle controleRD;
 
-    private float botaoSIZE = GameConfig.BOTAOGEMA_SIZE;
+    private float botaogema = GameConfig.BOTAOGEMA_SIZE;
+
+    private float gema1WSIZE = GameConfig.GEMA1W_SIZE;
+    private float gema1HSIZE = GameConfig.GEMA1H_SIZE;
+
+    private float gema2WSIZE = GameConfig.GEMA2W_SIZE;
+    private float gema2HSIZE = GameConfig.GEMA2H_SIZE;
+
+    private float gema3WSIZE = GameConfig.GEMA3W_SIZE;
+    private float gema3HSIZE = GameConfig.GEMA3H_SIZE;
+
+    private float gema4WSIZE = GameConfig.GEMA4W_SIZE;
+    private float gema4HSIZE = GameConfig.GEMA4H_SIZE;
+
+    private float badegemaWSIZE = GameConfig.BADEGEMASW_SIZE;
+    private float badegemaHSIZE = GameConfig.BADEGEMASW_SIZE;
+
+
     private Vector2 touch = new Vector2();
     private Vector2 touchControl = new Vector2();
+    private Vector2 touchTiro = new Vector2();
     private float PHbalde;
     private float PHbalde2;
     private float PHbalde3;
@@ -166,15 +191,25 @@ public class Abismo extends ScreenAdapter {
     private float CEW;
     private float CDH;
     private float CDW;
-    private Stage stage;
 
-    private boolean moverLEFT = false;
-    private boolean moverRIGHT = false;
+    private int qbalde1;
+    private int qbalde2;
+    private int qbalde3;
+    private int qbalde4;
 
-    private float CTX = 244;
-    private float CTY = 239;
+    private Array<Image> tiros1 = new Array<Image>();
+    private Array<Image> tiros2 = new Array<Image>();
+    private Array<Image> tiros3 = new Array<Image>();
+    private Array<Image> tiros4 = new Array<Image>();
 
-    private boolean leftPressed, rightPressed;
+    private float velocidadeTiro = 250;
+    private boolean atirando = false;
+    private int intervaloTiros = 350;
+
+    private Sprite BG;
+    private int i;
+
+
 
 
 
@@ -195,6 +230,12 @@ public class Abismo extends ScreenAdapter {
             public void lose() {
                 loseSound.play();
                 game.getAdController().showInterstitial();
+            }
+
+            @Override
+            public void jump() {
+                jumpSound.play();
+
             }
         };
 
@@ -230,10 +271,13 @@ public class Abismo extends ScreenAdapter {
         larguraDispositivo = VIRTUAL_WIDTH;
         alturaDispositivo = VIRTUAL_HEIGHT;
         hudStage = new Stage(viewport, batch);
-        stage = new Stage(viewport, batch);
+        cenario = new Stage(viewport, batch);
+
+
 
         coinSound = assetManager.get(AssetDescriptors.COIN);
         loseSound = assetManager.get(AssetDescriptors.LOSE);
+        jumpSound = assetManager.get(AssetDescriptors.JUMP);
 
         font = assetManager.get(AssetDescriptors.FONT);
 
@@ -299,13 +343,18 @@ public class Abismo extends ScreenAdapter {
         posicaoYM4 = 6000;
 
         PHbalde = 240;
-        PHbalde2 = 240;
-        PHbalde3 = 240;
-        PHbalde4 = 240;
+        PHbalde2 = -340;
+        PHbalde3 = -340;
+        PHbalde4 = -340;
         PWbalde = 90;
         mpass = new Vector3(Gdx.graphics.getWidth() / 2, 200, 0);
 
         vel = 200;
+        velM1 = 60;
+        velM2 = 60;
+        velM3 = 60;
+        velM4 = 60;
+
 
         CEH = 0;
         CEW = 360;
@@ -318,12 +367,10 @@ public class Abismo extends ScreenAdapter {
 
 
 
-
     }
 
     @Override
     public void render(float delta) {
-
         update(delta);
         renderGamePlay(delta);
         renderHud();
@@ -390,7 +437,23 @@ public class Abismo extends ScreenAdapter {
         // score
         String scoreString = "CAP. BADE: " + GameManager.INSTANCE.getDisplayScore();
         layout.setText(font, scoreString);
-        font.draw(batch, layout, padding, alturaDispositivo - layout.height);
+        font.draw(batch, layout, padding, alturaDispositivo - layout.height - 100);
+
+        String qB1 = "" + qbalde1;
+        layout.setText(font, qB1);
+        font.draw(batch, layout, 30, 640);
+
+        String qB2 = "" + qbalde2;
+        layout.setText(font, qB2);
+        font.draw(batch, layout, 30, 440);
+
+        String qB3 = "" + qbalde3;
+        layout.setText(font, qB3);
+        font.draw(batch, layout, larguraDispositivo - 80, 640);
+
+        String qB4 = "" + qbalde4;
+        layout.setText(font, qB4);
+        font.draw(batch, layout, larguraDispositivo - 80, 440);
 
         if (startWaitTimer >= 0) {
             int waitTime = (int) startWaitTimer;
@@ -459,11 +522,16 @@ public class Abismo extends ScreenAdapter {
             }
         }
 
+        i++;
+
+
         atualizarp(delta, viewport);
         drawFormas();
         mudarBalde(viewport);
-        mbalde(viewport, delta);
-        checcolision();
+        moverbalde(viewport, delta);
+        retsoma();
+        atirar(viewport);
+        atualizarTiros(delta);
 
 
     }
@@ -509,10 +577,10 @@ public class Abismo extends ScreenAdapter {
         posicaoY3 -= deltaTime * vel;
         posicaoY4 -= deltaTime * vel;
 
-        posicaoYM1 -= deltaTime * 20;
-        posicaoYM2 -= deltaTime * 20;
-        posicaoYM3 -= deltaTime * 20;
-        posicaoYM4 -= deltaTime * 20;
+        posicaoYM1 -= deltaTime * velM1;
+        posicaoYM2 -= deltaTime * velM2;
+        posicaoYM3 -= deltaTime * velM3;
+        posicaoYM4 -= deltaTime * velM4;
 
 
         if (posicaoYM1 < 70){
@@ -546,32 +614,31 @@ public class Abismo extends ScreenAdapter {
         batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
 
 
-        batch.draw(botao1, 0, 600, botaogema, botaogema);
-        batch.draw(botao2, 0, 500, botaogema, botaogema);
-        batch.draw(botao3, larguraDispositivo - 100, 600, botaogema, botaogema);
-        batch.draw(botao4, larguraDispositivo - 100, 500, botaogema, botaogema);
+        batch.draw(gema1, posicaoX1, posicaoY1, gema1WSIZE, gema1HSIZE);
+        batch.draw(gema2, posicaoX2, posicaoY2, gema2WSIZE, gema2HSIZE);
+        batch.draw(gema3, posicaoX3, posicaoY3, gema3WSIZE, gema3HSIZE);
+        batch.draw(gema4, posicaoX4, posicaoY4, gema4WSIZE, gema4HSIZE);
 
-        batch.draw(gema1, posicaoX1, posicaoY1);
-        batch.draw(gema2, posicaoX2, posicaoY2);
-        batch.draw(gema3, posicaoX3, posicaoY3);
-        batch.draw(gema4, posicaoX4, posicaoY4);
-
-        batch.draw(badegema1, posicaoXM1, posicaoYM1);
-        batch.draw(badegema2, posicaoXM2, posicaoYM2);
-        batch.draw(badegema3, posicaoXM3, posicaoYM3);
-        batch.draw(badegema4, posicaoXM4, posicaoYM4);
+        batch.draw(badegema1, posicaoXM1, posicaoYM1, 236, 238,
+                badegemaWSIZE, badegemaHSIZE, 0, 0, i++);
+        batch.draw(badegema2, posicaoXM2, posicaoYM2, badegemaWSIZE, badegemaHSIZE);
+        batch.draw(badegema3, posicaoXM3, posicaoYM3, badegemaWSIZE, badegemaHSIZE);
+        batch.draw(badegema4, posicaoXM4, posicaoYM4, badegemaWSIZE, badegemaHSIZE);
 
         if (botaon == 4){
-            batch.draw(baldegema4, PWbalde, PHbalde4);
-        }else if (botaon == 3){
             batch.draw(baldegema3, PWbalde, PHbalde3);
+        }else if (botaon == 3){
+            batch.draw(baldegema4, PWbalde, PHbalde4);
         }else if (botaon == 2){
             batch.draw(baldegema2, PWbalde, PHbalde2);
         }else{
             batch.draw(baldegema1, PWbalde, PHbalde);
         }
 
-
+        batch.draw(botao1, 0, 600, botaogema, botaogema);
+        batch.draw(botao2, 0, 400, botaogema, botaogema);
+        batch.draw(botao3, larguraDispositivo - 100, 600, botaogema, botaogema);
+        batch.draw(botao4, larguraDispositivo - 100, 400, botaogema, botaogema);
 
         batch.draw(controleD, CDW, CDH);
         batch.draw(controleE, CEW, CEH);
@@ -592,42 +659,42 @@ public class Abismo extends ScreenAdapter {
 
         botaoR1 = new Rectangle(
                 0, 600,
-                botaoSIZE, botaoSIZE
+                botaogema, botaogema
         );
 
         botaoR2 = new Rectangle(
-                0, 500,
-                botaoSIZE, botaoSIZE
+                0, 400,
+                botaogema, botaogema
         );
 
         botaoR3 = new Rectangle(
                 larguraDispositivo - 100, 600,
-                botaoSIZE, botaoSIZE
+                botaogema, botaogema
         );
 
         botaoR4 = new Rectangle(
-                larguraDispositivo - 100, 500,
-                botaoSIZE, botaoSIZE
+                larguraDispositivo - 100, 400,
+                botaogema, botaogema
         );
 
         gemaR1 = new Rectangle(
                 posicaoX1, posicaoY1,
-                125, 158
+                gema1WSIZE, gema1HSIZE
         );
 
         gemaR2 = new Rectangle(
                 posicaoX2, posicaoY2,
-                137, 130
+                gema2WSIZE, gema2HSIZE
         );
 
         gemaR3 = new Rectangle(
                 posicaoX3, posicaoY3,
-                162, 161
+                gema3WSIZE, gema3HSIZE
         );
 
         gemaR4 = new Rectangle(
                 posicaoX4, posicaoY4,
-                91, 161
+                gema4WSIZE, gema4HSIZE
         );
 
         badegemaR1 = new Rectangle(
@@ -650,9 +717,23 @@ public class Abismo extends ScreenAdapter {
                 236, 238
         );
         baldegemaR1 = new Rectangle(
-                posicaoXM1, posicaoYM1,
+                PWbalde, PHbalde,
                 125, 158
         );
+        baldegemaR2 = new Rectangle(
+                PWbalde, PHbalde2,
+                125, 158
+        );
+        baldegemaR3 = new Rectangle(
+                PWbalde, PHbalde3,
+                125, 158
+        );
+        baldegemaR4 = new Rectangle(
+                PWbalde, PHbalde4,
+                125, 158
+        );
+
+
 
 
 
@@ -684,140 +765,120 @@ public class Abismo extends ScreenAdapter {
             botaon = 2;
 
         } else if (botaoR3.contains(touch)){
-            PHbalde3 = 240;
-            PHbalde2 = -300;
-            PHbalde = -300;
-            PHbalde4 = -300;
-            botaon = 3;
-
-        } else if (botaoR4.contains(touch)){
             PHbalde4 = 240;
             PHbalde2 = -300;
             PHbalde3 = -300;
+            PHbalde = -300;
+            botaon = 3;
+
+        } else if (botaoR4.contains(touch)){
+            PHbalde3 = 240;
+            PHbalde2 = -300;
+            PHbalde4 = -300;
             PHbalde = -300;
             botaon = 4;
 
         }
 
     }
-    private void moverBalde(){
-        moverLEFT = Gdx.input.isKeyPressed(Input.Keys.LEFT);
-        moverRIGHT = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
-
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-
-            int x = Gdx.input.getX();
-            int y = Gdx.input.getY();
-
-            if (x >= CDW & x <= CTX & y >= CDH & y <= CTY){
-                moverRIGHT = true;
-
-
-            }else if (x >= CEW & x <= CTX & y >= CEH & y <= CTY){
-                moverLEFT = true;
-
-            }
-
-
-        }
-
-    }
-    private void moverBalde2(){
-        stage.addListener(new InputListener(){
-
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                switch(keycode){
-                    case Input.Keys.LEFT:
-                        leftPressed = true;
-                        break;
-                    case Input.Keys.RIGHT:
-                        rightPressed = true;
-                        break;
-                }
-                return true;
-            }
-
-            @Override
-            public boolean keyUp(InputEvent event, int keycode) {
-                switch(keycode){
-                    case Input.Keys.LEFT:
-                        leftPressed = false;
-                        break;
-                    case Input.Keys.RIGHT:
-                        rightPressed = false;
-                        break;
-                }
-                return true;
-            }
-        });
-
-        Gdx.input.setInputProcessor(stage);
-
-        Image controlD = new Image(controleD);
-        controlD.addListener(new InputListener() {
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                rightPressed = true;
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                rightPressed = false;
-            }
-        });
-
-        Image controlE = new Image(controleE);
-        controlE.addListener(new InputListener() {
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                leftPressed = true;
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                leftPressed = false;
-            }
-        });
 
 
 
-    }
-    public void handleInput(float delta){
-        if(isRightPressed())
-            PWbalde += delta * 100;
-        else if (isLeftPressed())
-            PWbalde -= delta * 100;
-        else
-            PWbalde -= delta * 0;
-
-    }
-
-    private void mbalde(Viewport viewport, float delta){
+    private void moverbalde(Viewport viewport, float delta){
         for (int i=0; i<5; i++){
             if (!Gdx.input.isTouched(i)) continue;
             viewport.unproject(touchControl.set(Gdx.input.getX(i), Gdx.input.getY(i)));
             if (controleRE.contains(touchControl.x, touchControl.y)){
                 //Move your player to the left!
-                PWbalde -= delta * 200;
+                PWbalde += delta * 400;
             }else if (controleRD.contains(touchControl.x, touchControl.y)){
                 //Move your player to the right!
-                PWbalde += delta * 200;
+                PWbalde -= delta * 400;
             }
         }
 
     }
 
-    public boolean isLeftPressed() {
-        return leftPressed;
+    private void atirar(Viewport viewport){
+        atirando = false;
+        for (int i=0; i<5; i++){
+            if (!Gdx.input.isTouched(i)) continue;
+            viewport.unproject(touchTiro.set(Gdx.input.getX(i), Gdx.input.getY(i)));
+            if (baldegemaR1.contains(touchControl.x, touchControl.y)){
+                //Move your player to the left!
+                atirando = true;
+            }
+        }
+
     }
 
-    public boolean isRightPressed() {
-        return rightPressed;
+    private void retsoma(){
+
+        if (Intersector.overlaps(baldegemaR1, gemaR1)){
+            qbalde1 = qbalde1 + 1;
+            posicaoY1 = numeroRandomico.nextInt(1300) + (1100);
+            listener.hitCoin();
+
+        }else if (Intersector.overlaps(baldegemaR2, gemaR2)){
+            qbalde2 = qbalde2 + 1;
+            posicaoY2 = numeroRandomico.nextInt(1500) + (1300);
+            listener.hitCoin();
+
+        }else if (Intersector.overlaps(baldegemaR3, gemaR3)){
+            qbalde4 = qbalde4 + 1;
+            posicaoY3 = numeroRandomico.nextInt(1600) + (1500);
+            listener.hitCoin();
+
+        }else if (Intersector.overlaps(baldegemaR4, gemaR4)){
+            qbalde3 = qbalde3 + 1;
+            posicaoY4 = numeroRandomico.nextInt(2000) + (1600);
+            listener.hitCoin();
+
+
+        }
     }
+
+
+    private void atualizarTiros(float delta) {
+        jogador = new Image(baldegema1);
+        jogador.setPosition(PWbalde, 240);
+        cenario.addActor(jogador);
+        cenario.act(delta);
+        cenario.draw();
+
+        for (Image tiro : tiros1) {
+            // movimenta o tiro em direÃ§Ã£o ao topo da tela
+            float x = tiro.getX();
+            float y = tiro.getY() + velocidadeTiro * delta;
+            tiro.setPosition(x, y);
+            // verifica se o tiro jÃ¡ saiu da tela
+            if (tiro.getY() > camera.viewportHeight) {
+                tiro.remove();
+                tiros1.removeValue(tiro, true);
+            }
+        }
+
+        // cria novos tiros se necessÃ¡rio
+        if (atirando) {
+            // verifica se o Ãºltimo tiro foi disparado a 400 milisegundos atrÃ¡s
+            if (System.currentTimeMillis() - ultimoTiro >= intervaloTiros) {
+                Image tiro = new Image(gema1);
+                float x = jogador.getX() + jogador.getWidth() / 2 - tiro.getWidth() / 2;
+                float y = jogador.getY() + jogador.getHeight();
+                tiro.setPosition(x, y);
+                tiros1.add(tiro);
+                cenario.addActor(tiro);
+                ultimoTiro = System.currentTimeMillis();
+                listener.jump();
+            }
+        }
+    }
+
+
+    private long ultimoTiro = 0;
+
+
+
+
 
 }

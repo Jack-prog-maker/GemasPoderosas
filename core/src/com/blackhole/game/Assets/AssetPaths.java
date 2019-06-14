@@ -13,5 +13,7 @@ public class AssetPaths {
 
     public static final String LOSE_SOUND = "sounds/lose.wav";
 
+    public static final String JUMP_SOUND = "sounds/jump.wav";
+
     private AssetPaths() {}
 }

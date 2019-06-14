@@ -25,6 +25,9 @@ public class AssetDescriptors {
     public static final AssetDescriptor<Sound> LOSE =
             new AssetDescriptor<Sound>(AssetPaths.LOSE_SOUND, Sound.class);
 
+    public static final AssetDescriptor<Sound> JUMP =
+            new AssetDescriptor<Sound>(AssetPaths.JUMP_SOUND, Sound.class);
+
     private AssetDescriptors() {
     }
 }

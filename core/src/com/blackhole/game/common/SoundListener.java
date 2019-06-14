@@ -6,4 +6,6 @@ public interface SoundListener {
     void hitCoin();
 
     void lose();
+
+    void jump();
 }

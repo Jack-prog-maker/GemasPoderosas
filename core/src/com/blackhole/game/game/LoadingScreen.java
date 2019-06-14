@@ -3,6 +3,7 @@ package com.blackhole.game.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -47,6 +48,7 @@ public class LoadingScreen extends ScreenAdapter {
     private float alturaDispositivo;
 
     private Texture logo;
+    private Texture loading;
 
 
 
@@ -63,6 +65,7 @@ public class LoadingScreen extends ScreenAdapter {
     public void show() {
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
+        renderer = new ShapeRenderer();
         camera.position.set(VIRTUAL_WIDTH/2,VIRTUAL_HEIGHT/2, 0);
         viewport = new StretchViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, camera);
 
@@ -74,8 +77,12 @@ public class LoadingScreen extends ScreenAdapter {
         assetManager.load(AssetDescriptors.SKIN);
         assetManager.load(AssetDescriptors.COIN);
         assetManager.load(AssetDescriptors.LOSE);
+        assetManager.load(AssetDescriptors.JUMP);
 
         logo = new Texture("logo.png");
+        loading = new Texture("loading.png");
+
+
 
 
 
@@ -93,9 +100,19 @@ public class LoadingScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        batch.draw(logo,  larguraDispositivo / 2 - 400 / 2, alturaDispositivo / 2, 400, 250);
+        batch.draw(logo,  0, 0,  larguraDispositivo, alturaDispositivo);
+        batch.draw(loading,  100, 100);
 
         batch.end();
+
+        renderer.setProjectionMatrix(camera.combined);
+        renderer.begin(ShapeRenderer.ShapeType.Filled);
+        renderer.setColor(Color.BLACK);
+
+        draw();
+
+        renderer.end();
+
 
 
         if (changeScreen) {
@@ -131,6 +148,13 @@ public class LoadingScreen extends ScreenAdapter {
             }
         }
     }
+
+    private void draw() {
+
+        renderer.rect(100, 100,
+                progress * PROGRESS_BAR_WIDTH, PROGRESS_BAR_HEIGHT);
+    }
+
 
 
 }
