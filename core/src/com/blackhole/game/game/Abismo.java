@@ -95,6 +95,10 @@ public class Abismo extends ScreenAdapter {
     private TextureRegion gema2;
     private TextureRegion gema3;
     private TextureRegion gema4;
+    private TextureRegion gemaT1;
+    private TextureRegion gemaT2;
+    private TextureRegion gemaT3;
+    private TextureRegion gemaT4;
     private TextureRegion botao1;
     private TextureRegion botao2;
     private TextureRegion botao3;
@@ -124,6 +128,9 @@ public class Abismo extends ScreenAdapter {
     private Stage hudStage;
     private Stage cenario;
     private Image jogador;
+    private Image jogador2;
+    private Image jogador3;
+    private Image jogador4;
     private MenuOverlay menuOverlay;
     private GameOverOverlay gameOverOverlay;
 
@@ -141,6 +148,11 @@ public class Abismo extends ScreenAdapter {
     private Rectangle badegemaR2;
     private Rectangle badegemaR3;
     private Rectangle badegemaR4;
+
+    private Rectangle tiroR1;
+    private Rectangle tiroR2;
+    private Rectangle tiroR3;
+    private Rectangle tiroR4;
 
     private Rectangle baldegemaR1;
     private Rectangle baldegemaR2;
@@ -174,6 +186,18 @@ public class Abismo extends ScreenAdapter {
     private float gema4WSIZE = GameConfig.GEMA4W_SIZE;
     private float gema4HSIZE = GameConfig.GEMA4H_SIZE;
 
+    private float gemaT1WSIZE = GameConfig.GEMAT1W_SIZE;
+    private float gemaT1HSIZE = GameConfig.GEMAT1H_SIZE;
+
+    private float gemaT2WSIZE = GameConfig.GEMAT2W_SIZE;
+    private float gemaT2HSIZE = GameConfig.GEMAT2H_SIZE;
+
+    private float gemaT3WSIZE = GameConfig.GEMAT3W_SIZE;
+    private float gemaT3HSIZE = GameConfig.GEMAT3H_SIZE;
+
+    private float gemaT4WSIZE = GameConfig.GEMAT4W_SIZE;
+    private float gemaT4HSIZE = GameConfig.GEMAT4H_SIZE;
+
     private float badegemaWSIZE = GameConfig.BADEGEMASW_SIZE;
     private float badegemaHSIZE = GameConfig.BADEGEMASW_SIZE;
 
@@ -204,10 +228,17 @@ public class Abismo extends ScreenAdapter {
 
     private float velocidadeTiro = 250;
     private boolean atirando = false;
+    private boolean atirando2 = false;
+    private boolean atirando3 = false;
+    private boolean atirando4 = false;
     private int intervaloTiros = 350;
 
     private Sprite BG;
     private int i;
+    private int ntiros;
+    private int ntiros2;
+    private int ntiros3;
+    private int ntiros4;
 
 
 
@@ -307,10 +338,29 @@ public class Abismo extends ScreenAdapter {
         gema3 = gamePlayAtlas.findRegion(RegionNames.GEMA3);
         gema4 = gamePlayAtlas.findRegion(RegionNames.GEMA4);
 
+        gemaT1 = gamePlayAtlas.findRegion(RegionNames.GEMA1);
+        gemaT2 = gamePlayAtlas.findRegion(RegionNames.GEMA2);
+        gemaT3 = gamePlayAtlas.findRegion(RegionNames.GEMA3);
+        gemaT4 = gamePlayAtlas.findRegion(RegionNames.GEMA4);
+
         fundo = gamePlayAtlas.findRegion(RegionNames.FUNDO);
         logo = gamePlayAtlas.findRegion(RegionNames.LOGO);
         controleD = gamePlayAtlas.findRegion(RegionNames.CONTROLED);
         controleE = gamePlayAtlas.findRegion(RegionNames.CONTROLEE);
+
+        jogador = new Image(baldegema1);
+        jogador2 = new Image(baldegema2);
+        jogador3 = new Image(baldegema3);
+        jogador4 = new Image(baldegema4);
+        cenario.addActor(jogador);
+        cenario.addActor(jogador2);
+        cenario.addActor(jogador3);
+        cenario.addActor(jogador4);
+        jogador.setPosition(200, -240);
+        jogador2.setPosition(200, -240);
+        jogador3.setPosition(200, -240);
+        jogador4.setPosition(200, -240);
+        Gdx.input.setInputProcessor(cenario);
 
 
         menuOverlay = new MenuOverlay(skin, callback);
@@ -321,6 +371,7 @@ public class Abismo extends ScreenAdapter {
 //        hudStage.setDebugAll(true);
 
         Gdx.input.setInputProcessor(hudStage);
+
 
         posicaoX1 = 100;
         posicaoX2 = 200;
@@ -374,7 +425,8 @@ public class Abismo extends ScreenAdapter {
         update(delta);
         renderGamePlay(delta);
         renderHud();
-
+        cenario.act(delta);
+        cenario.draw();
 
 
 
@@ -524,7 +576,10 @@ public class Abismo extends ScreenAdapter {
 
         i++;
 
-
+        jogador.setPosition(PWbalde, PHbalde);
+        jogador2.setPosition(PWbalde, PHbalde2);
+        jogador3.setPosition(PWbalde, PHbalde3);
+        jogador4.setPosition(PWbalde, PHbalde4);
         atualizarp(delta, viewport);
         drawFormas();
         mudarBalde(viewport);
@@ -532,6 +587,10 @@ public class Abismo extends ScreenAdapter {
         retsoma();
         atirar(viewport);
         atualizarTiros(delta);
+        atualizarTiros2(delta);
+        atualizarTiros3(delta);
+        atualizarTiros4(delta);
+        checcolision(delta);
 
 
     }
@@ -566,11 +625,6 @@ public class Abismo extends ScreenAdapter {
     }
 
     private void atualizarp(float deltaTime, Viewport viewport) {
-        if (Gdx.input.isTouched()) {
-            mpass.set(Gdx.input.getX(), 200, 0);
-            viewport.unproject(mpass);
-        }
-
 
         posicaoY1 -= deltaTime * vel;
         posicaoY2 -= deltaTime * vel;
@@ -585,19 +639,27 @@ public class Abismo extends ScreenAdapter {
 
         if (posicaoYM1 < 70){
             posicaoYM1 = numeroRandomico.nextInt(2200) + (2000);
+            posicaoXM1 = numeroRandomico.nextInt(500) + (80);
         }else if (posicaoYM2 < 70){
+            posicaoXM2 = numeroRandomico.nextInt(500) + (80);
             posicaoYM2 = numeroRandomico.nextInt(3200) + (3000);
         }else if (posicaoYM3 < 70){
+            posicaoXM3 = numeroRandomico.nextInt(500) + (80);
             posicaoYM3 = numeroRandomico.nextInt(4200) + (4000);
         }else if (posicaoYM4 < 70){
+            posicaoXM4 = numeroRandomico.nextInt(500) + (80);
             posicaoYM4 = numeroRandomico.nextInt(5200) + (5000);
         }else if (posicaoY1 < 70){
+            posicaoX1 = numeroRandomico.nextInt(500) + (80);
             posicaoY1 = numeroRandomico.nextInt(1300) + (1100);
         }else if (posicaoY2 < 70){
+            posicaoX2 = numeroRandomico.nextInt(500) + (80);
             posicaoY2 = numeroRandomico.nextInt(1500) + (1300);
         }else if (posicaoY3 < 70){
+            posicaoX3 = numeroRandomico.nextInt(500) + (80);
             posicaoY3 = numeroRandomico.nextInt(1600) + (1500);
         }else if (posicaoY4 < 70){
+            posicaoX4 = numeroRandomico.nextInt(500) + (80);
             posicaoY4 = numeroRandomico.nextInt(2000) + (1600);
 
         }
@@ -619,8 +681,7 @@ public class Abismo extends ScreenAdapter {
         batch.draw(gema3, posicaoX3, posicaoY3, gema3WSIZE, gema3HSIZE);
         batch.draw(gema4, posicaoX4, posicaoY4, gema4WSIZE, gema4HSIZE);
 
-        batch.draw(badegema1, posicaoXM1, posicaoYM1, 236, 238,
-                badegemaWSIZE, badegemaHSIZE, 0, 0, i++);
+        batch.draw(badegema1, posicaoXM1, posicaoYM1, badegemaWSIZE, badegemaHSIZE);
         batch.draw(badegema2, posicaoXM2, posicaoYM2, badegemaWSIZE, badegemaHSIZE);
         batch.draw(badegema3, posicaoXM3, posicaoYM3, badegemaWSIZE, badegemaHSIZE);
         batch.draw(badegema4, posicaoXM4, posicaoYM4, badegemaWSIZE, badegemaHSIZE);
@@ -699,22 +760,22 @@ public class Abismo extends ScreenAdapter {
 
         badegemaR1 = new Rectangle(
                 posicaoXM1, posicaoYM1,
-                236, 238
+                badegemaWSIZE, badegemaHSIZE
         );
 
         badegemaR2 = new Rectangle(
                 posicaoXM2, posicaoYM2,
-                236, 238
+                badegemaWSIZE, badegemaHSIZE
         );
 
         badegemaR3 = new Rectangle(
                 posicaoXM3, posicaoYM3,
-                236, 238
+                badegemaWSIZE, badegemaHSIZE
         );
 
         badegemaR4 = new Rectangle(
                 posicaoXM4, posicaoYM4,
-                236, 238
+                badegemaWSIZE, badegemaHSIZE
         );
         baldegemaR1 = new Rectangle(
                 PWbalde, PHbalde,
@@ -738,8 +799,98 @@ public class Abismo extends ScreenAdapter {
 
 
     }
-    private void checcolision(){
+    private void checcolision(float delta){
         //Teste de colisão
+        for (Image tiro : tiros1) {
+            // movimenta o tiro em direÃ§Ã£o ao topo da tela
+            float x = tiro.getX();
+            float y = tiro.getY() + velocidadeTiro * delta;
+            tiroR1 = new Rectangle(x, y, gemaT1WSIZE, gemaT1HSIZE);
+            if (Intersector.overlaps(tiroR1, badegemaR1)){
+                if (ntiros == 4){
+                    posicaoXM1 = numeroRandomico.nextInt(500) + (80);
+                    posicaoYM1 = numeroRandomico.nextInt(2200) + (2000);
+                    tiro.remove();
+                    tiros1.removeValue(tiro, true);
+                    ntiros = 0;
+                    addFloatingScore(1);
+                }else{
+                    tiro.remove();
+                    tiros1.removeValue(tiro, true);
+                    ntiros = ntiros + 1;
+                }
+
+            }
+
+        }
+        for (Image tiro : tiros2) {
+            // movimenta o tiro em direÃ§Ã£o ao topo da tela
+            float x = tiro.getX();
+            float y = tiro.getY() + velocidadeTiro * delta;
+            tiroR2 = new Rectangle(x, y, gemaT2WSIZE, gemaT2HSIZE);
+            if (Intersector.overlaps(tiroR2, badegemaR2)){
+                if (ntiros2 == 4){
+                    posicaoXM2 = numeroRandomico.nextInt(500) + (80);
+                    posicaoYM2 = numeroRandomico.nextInt(3200) + (3000);
+                    tiro.remove();
+                    tiros2.removeValue(tiro, true);
+                    ntiros2 = 0;
+                    addFloatingScore(1);
+                }else{
+                    tiro.remove();
+                    tiros2.removeValue(tiro, true);
+                    ntiros2 = ntiros2 + 1;
+                }
+
+            }
+
+        }
+        for (Image tiro : tiros3) {
+            // movimenta o tiro em direÃ§Ã£o ao topo da tela
+            float x = tiro.getX();
+            float y = tiro.getY() + velocidadeTiro * delta;
+            tiroR3 = new Rectangle(x, y, gemaT3WSIZE, gemaT3HSIZE);
+            if (Intersector.overlaps(tiroR3, badegemaR3)){
+                if (ntiros3 == 4){
+                    posicaoXM3 = numeroRandomico.nextInt(500) + (80);
+                    posicaoYM3 = numeroRandomico.nextInt(4200) + (4000);
+                    tiro.remove();
+                    tiros3.removeValue(tiro, true);
+                    ntiros3 = 0;
+                    addFloatingScore(1);
+                }else{
+                    tiro.remove();
+                    tiros3.removeValue(tiro, true);
+                    ntiros3 = ntiros3 + 1;
+                }
+
+            }
+
+        }
+        for (Image tiro : tiros4) {
+            // movimenta o tiro em direÃ§Ã£o ao topo da tela
+            float x = tiro.getX();
+            float y = tiro.getY() + velocidadeTiro * delta;
+            tiroR4 = new Rectangle(x, y, gemaT4WSIZE, gemaT4HSIZE);
+            if (Intersector.overlaps(tiroR4, badegemaR4)){
+                if (ntiros4 == 4){
+                    posicaoXM4 = numeroRandomico.nextInt(500) + (80);
+                    posicaoYM4 = numeroRandomico.nextInt(5200) + (5000);
+                    tiro.remove();
+                    tiros4.removeValue(tiro, true);
+                    ntiros4 = 0;
+                    addFloatingScore(1);
+
+                }else{
+                    tiro.remove();
+                    tiros4.removeValue(tiro, true);
+                    ntiros4 = ntiros4 + 1;
+                }
+
+            }
+
+        }
+
 
     }
 
@@ -801,12 +952,34 @@ public class Abismo extends ScreenAdapter {
 
     private void atirar(Viewport viewport){
         atirando = false;
+        atirando2 = false;
+        atirando3 = false;
+        atirando4 = false;
         for (int i=0; i<5; i++){
             if (!Gdx.input.isTouched(i)) continue;
             viewport.unproject(touchTiro.set(Gdx.input.getX(i), Gdx.input.getY(i)));
+
             if (baldegemaR1.contains(touchControl.x, touchControl.y)){
-                //Move your player to the left!
-                atirando = true;
+                if (qbalde1 != 0){
+                    //Move your player to the left!
+                    atirando = true;
+                }
+
+            }else if (baldegemaR2.contains(touchControl.x, touchControl.y)){
+                if (qbalde2 != 0){
+                    //Move your player to the left!
+                    atirando2 = true;
+                }
+            }else if (baldegemaR3.contains(touchControl.x, touchControl.y)){
+                if (qbalde4 != 0){
+                    //Move your player to the left!
+                    atirando3 = true;
+                }
+            }else if (baldegemaR4.contains(touchControl.x, touchControl.y)){
+                if (qbalde3 != 0){
+                    //Move your player to the left!
+                    atirando4 = true;
+                }
             }
         }
 
@@ -816,21 +989,25 @@ public class Abismo extends ScreenAdapter {
 
         if (Intersector.overlaps(baldegemaR1, gemaR1)){
             qbalde1 = qbalde1 + 1;
+            posicaoX1 = numeroRandomico.nextInt(500) + (80);
             posicaoY1 = numeroRandomico.nextInt(1300) + (1100);
             listener.hitCoin();
 
         }else if (Intersector.overlaps(baldegemaR2, gemaR2)){
             qbalde2 = qbalde2 + 1;
+            posicaoX2 = numeroRandomico.nextInt(500) + (80);
             posicaoY2 = numeroRandomico.nextInt(1500) + (1300);
             listener.hitCoin();
 
         }else if (Intersector.overlaps(baldegemaR3, gemaR3)){
             qbalde4 = qbalde4 + 1;
+            posicaoX3 = numeroRandomico.nextInt(500) + (80);
             posicaoY3 = numeroRandomico.nextInt(1600) + (1500);
             listener.hitCoin();
 
         }else if (Intersector.overlaps(baldegemaR4, gemaR4)){
             qbalde3 = qbalde3 + 1;
+            posicaoX4 = numeroRandomico.nextInt(500) + (80);
             posicaoY4 = numeroRandomico.nextInt(2000) + (1600);
             listener.hitCoin();
 
@@ -840,17 +1017,14 @@ public class Abismo extends ScreenAdapter {
 
 
     private void atualizarTiros(float delta) {
-        jogador = new Image(baldegema1);
-        jogador.setPosition(PWbalde, 240);
-        cenario.addActor(jogador);
-        cenario.act(delta);
-        cenario.draw();
+
 
         for (Image tiro : tiros1) {
             // movimenta o tiro em direÃ§Ã£o ao topo da tela
             float x = tiro.getX();
             float y = tiro.getY() + velocidadeTiro * delta;
             tiro.setPosition(x, y);
+            tiro.setSize(gemaT1WSIZE, gemaT1HSIZE);
             // verifica se o tiro jÃ¡ saiu da tela
             if (tiro.getY() > camera.viewportHeight) {
                 tiro.remove();
@@ -862,16 +1036,125 @@ public class Abismo extends ScreenAdapter {
         if (atirando) {
             // verifica se o Ãºltimo tiro foi disparado a 400 milisegundos atrÃ¡s
             if (System.currentTimeMillis() - ultimoTiro >= intervaloTiros) {
-                Image tiro = new Image(gema1);
+                Image tiro = new Image(gemaT1);
                 float x = jogador.getX() + jogador.getWidth() / 2 - tiro.getWidth() / 2;
                 float y = jogador.getY() + jogador.getHeight();
                 tiro.setPosition(x, y);
                 tiros1.add(tiro);
                 cenario.addActor(tiro);
                 ultimoTiro = System.currentTimeMillis();
+                qbalde1 = qbalde1 - 1;
                 listener.jump();
             }
+
         }
+
+
+    }
+    private void atualizarTiros2(float delta) {
+
+
+        for (Image tiro : tiros2) {
+            // movimenta o tiro em direÃ§Ã£o ao topo da tela
+            float x = tiro.getX();
+            float y = tiro.getY() + velocidadeTiro * delta;
+            tiro.setPosition(x, y);
+            tiro.setSize(gemaT2WSIZE, gemaT2HSIZE);
+            // verifica se o tiro jÃ¡ saiu da tela
+            if (tiro.getY() > camera.viewportHeight) {
+                tiro.remove();
+                tiros2.removeValue(tiro, true);
+            }
+        }
+
+        // cria novos tiros se necessÃ¡rio
+        if (atirando2) {
+            // verifica se o Ãºltimo tiro foi disparado a 400 milisegundos atrÃ¡s
+            if (System.currentTimeMillis() - ultimoTiro >= intervaloTiros) {
+                Image tiro = new Image(gemaT2);
+                float x = jogador2.getX() + jogador2.getWidth() / 2 - tiro.getWidth() / 2;
+                float y = jogador2.getY() + jogador2.getHeight();
+                tiro.setPosition(x, y);
+                tiros2.add(tiro);
+                cenario.addActor(tiro);
+                ultimoTiro = System.currentTimeMillis();
+                qbalde2 = qbalde2 - 1;
+                listener.jump();
+            }
+
+        }
+
+
+    }
+    private void atualizarTiros3(float delta) {
+
+
+        for (Image tiro : tiros3) {
+            // movimenta o tiro em direÃ§Ã£o ao topo da tela
+            float x = tiro.getX();
+            float y = tiro.getY() + velocidadeTiro * delta;
+            tiro.setPosition(x, y);
+            tiro.setSize(gemaT3WSIZE, gemaT3HSIZE);
+            // verifica se o tiro jÃ¡ saiu da tela
+            if (tiro.getY() > camera.viewportHeight) {
+                tiro.remove();
+                tiros3.removeValue(tiro, true);
+            }
+        }
+
+        // cria novos tiros se necessÃ¡rio
+        if (atirando3) {
+            // verifica se o Ãºltimo tiro foi disparado a 400 milisegundos atrÃ¡s
+            if (System.currentTimeMillis() - ultimoTiro >= intervaloTiros) {
+                Image tiro = new Image(gemaT3);
+                float x = jogador3.getX() + jogador3.getWidth() / 2 - tiro.getWidth() / 2;
+                float y = jogador3.getY() + jogador3.getHeight();
+                tiro.setPosition(x, y);
+                tiros3.add(tiro);
+                cenario.addActor(tiro);
+                ultimoTiro = System.currentTimeMillis();
+                qbalde4 = qbalde4 - 1;
+                listener.jump();
+            }
+
+        }
+
+
+    }
+    private void atualizarTiros4(float delta) {
+
+
+        for (Image tiro : tiros4) {
+            // movimenta o tiro em direÃ§Ã£o ao topo da tela
+            float x = tiro.getX();
+            float y = tiro.getY() + velocidadeTiro * delta;
+            tiro.setPosition(x, y);
+            tiro.setSize(gemaT4WSIZE, gemaT4HSIZE);
+            // verifica se o tiro jÃ¡ saiu da tela
+            if (tiro.getY() > camera.viewportHeight) {
+                tiro.remove();
+                tiros4.removeValue(tiro, true);
+            }
+        }
+
+        // cria novos tiros se necessÃ¡rio
+        if (atirando4) {
+            // verifica se o Ãºltimo tiro foi disparado a 400 milisegundos atrÃ¡s
+            if (System.currentTimeMillis() - ultimoTiro >= intervaloTiros) {
+                Image tiro = new Image(gemaT4);
+                float x = jogador4.getX() + jogador4.getWidth() / 2 - tiro.getWidth() / 2;
+                float y = jogador4.getY() + jogador4.getHeight();
+                tiro.setPosition(x, y);
+                tiros4.add(tiro);
+                cenario.addActor(tiro);
+                ultimoTiro = System.currentTimeMillis();
+                qbalde3 = qbalde3 - 1;
+                listener.jump();
+            }
+
+        }
+
+
     }
 
 

@@ -80,9 +80,6 @@ public class LoadingScreen extends ScreenAdapter {
         assetManager.load(AssetDescriptors.JUMP);
 
         logo = new Texture("logo.png");
-        loading = new Texture("loading.png");
-
-
 
 
 
@@ -101,19 +98,8 @@ public class LoadingScreen extends ScreenAdapter {
         batch.begin();
 
         batch.draw(logo,  0, 0,  larguraDispositivo, alturaDispositivo);
-        batch.draw(loading,  100, 100);
 
         batch.end();
-
-        renderer.setProjectionMatrix(camera.combined);
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.BLACK);
-
-        draw();
-
-        renderer.end();
-
-
 
         if (changeScreen) {
             game.setScreen(new Abismo(game));
@@ -149,11 +135,6 @@ public class LoadingScreen extends ScreenAdapter {
         }
     }
 
-    private void draw() {
-
-        renderer.rect(100, 100,
-                progress * PROGRESS_BAR_WIDTH, PROGRESS_BAR_HEIGHT);
-    }
 
 
 
