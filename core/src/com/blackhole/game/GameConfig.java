@@ -11,11 +11,12 @@ public class GameConfig {
     public static final float GEMA2W_SIZE = 87f;
     public static final float GEMA2H_SIZE = 80f;
 
-    public static final float GEMA3W_SIZE = 112f;
+    public static final float GEMA3W_SIZE = 41f;
     public static final float GEMA3H_SIZE = 111f;
 
-    public static final float GEMA4W_SIZE = 41f;
+    public static final float GEMA4W_SIZE = 112f;
     public static final float GEMA4H_SIZE = 111f;
+
 
     public static final float GEMAT1W_SIZE = 25f;
     public static final float GEMAT1H_SIZE = 58f;

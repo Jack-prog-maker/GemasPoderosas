@@ -1,76 +1,54 @@
-
 skin.png
-size: 1024,512
+size: 816, 1013
 format: RGBA8888
-filter: Nearest,Nearest
+filter: Linear,Linear
 repeat: none
-button-down
+Badelogo
   rotate: false
-  xy: 260, 132
-  size: 128, 128
-  orig: 128, 128
+  xy: 0, 494
+  size: 644, 74
+  orig: 644, 74
   offset: 0, 0
   index: -1
-button-over
+gameover
   rotate: false
-  xy: 260, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-button-up
-  rotate: false
-  xy: 408, 288
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-game-over
-  rotate: false
-  xy: 2, 418
-  size: 528, 61
-  orig: 528, 61
+  xy: 178, 0
+  size: 300, 170
+  orig: 300, 170
   offset: 0, 0
   index: -1
 home
   rotate: false
-  xy: 532, 419
-  size: 60, 60
-  orig: 60, 60
-  offset: 0, 0
-  index: -1
-logo
-  rotate: false
-  xy: 2, 262
-  size: 404, 154
-  orig: 404, 154
+  xy: 0, 170
+  size: 330, 324
+  orig: 330, 324
   offset: 0, 0
   index: -1
 panel
   rotate: false
-  xy: 2, 4
-  size: 256, 256
-  orig: 256, 256
+  xy: 0, 568
+  size: 722, 445
+  orig: 722, 445
   offset: 0, 0
   index: -1
 play
   rotate: false
-  xy: 594, 419
-  size: 60, 60
-  orig: 60, 60
+  xy: 478, 0
+  size: 338, 168
+  orig: 338, 168
   offset: 0, 0
   index: -1
 quit
   rotate: false
-  xy: 656, 419
-  size: 60, 60
-  orig: 60, 60
+  xy: 0, 0
+  size: 178, 170
+  orig: 178, 170
   offset: 0, 0
   index: -1
 restart
   rotate: false
-  xy: 718, 419
-  size: 60, 60
-  orig: 60, 60
+  xy: 330, 170
+  size: 331, 324
+  orig: 331, 324
   offset: 0, 0
   index: -1

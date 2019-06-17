@@ -5,7 +5,7 @@ package com.blackhole.game.Assets;
 public class RegionNames {
 
 
-    public static final String GAME_OVER = "game-over";
+    public static final String GAME_OVER = "gameover";
     public static final String PANEL = "panel";
     public static final String BADEGEMA1 = "badegema1";
     public static final String BADEGEMA2 = "badegema2";
@@ -24,9 +24,12 @@ public class RegionNames {
     public static final String GEMA3 = "gema3";
     public static final String GEMA4 = "gema4";
     public static final String FUNDO = "fundo";
-    public static final String LOGO = "logo";
     public static final String CONTROLED = "moverD";
     public static final String CONTROLEE = "moverE";
+    public static final String BOTAOATIRAR = "botaoatirar";
+    public static final String EXPLOSAO = "explosion";
+    public static final String LOGOGAME = "Badelogo";
+
 
 
 

@@ -2,12 +2,14 @@ package com.blackhole.game.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.blackhole.game.Assets.ButtonStyleNames;
+import com.blackhole.game.Assets.RegionNames;
 import com.blackhole.game.common.GameManager;
 
 
@@ -27,6 +29,11 @@ public class MenuOverlay extends Table {
     // == init ==
     private void init() {
         defaults().pad(20);
+
+        Table logoTable = new Table();
+        logoTable.top();
+        Image logoImage = new Image(getSkin(), RegionNames.LOGOGAME);
+        logoTable.add(logoImage);
 
         Table buttonTable = new Table();
 
@@ -56,10 +63,12 @@ public class MenuOverlay extends Table {
         buttonTable.add(scoreTable).center().expandX();
         buttonTable.add(quitButton).right().expandX();
 
+        add(logoTable).top().grow().row();
         add(buttonTable).grow().center().row();
         center();
         setFillParent(true);
         pack();
+
     }
 
     public void updateLabel() {
