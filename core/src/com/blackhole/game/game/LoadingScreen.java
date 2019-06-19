@@ -77,7 +77,12 @@ public class LoadingScreen extends ScreenAdapter {
         assetManager.load(AssetDescriptors.SKIN);
         assetManager.load(AssetDescriptors.COIN);
         assetManager.load(AssetDescriptors.LOSE);
-        assetManager.load(AssetDescriptors.JUMP);
+        assetManager.load(AssetDescriptors.TIRO);
+        assetManager.load(AssetDescriptors.COLISAO);
+        assetManager.load(AssetDescriptors.BONUS);
+        assetManager.load(AssetDescriptors.SOUND);
+        assetManager.load(AssetDescriptors.FIRE);
+        assetManager.load(AssetDescriptors.STAR);
 
         logo = new Texture("logo.png");
 

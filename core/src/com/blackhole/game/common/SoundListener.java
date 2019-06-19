@@ -7,5 +7,11 @@ public interface SoundListener {
 
     void lose();
 
-    void jump();
+    void tiro();
+
+    void bonus();
+
+    void sound();
+
+    void colisao();
 }

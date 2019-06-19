@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -127,7 +128,11 @@ public class Abismo extends ScreenAdapter {
 
     private Sound coinSound;
     private Sound loseSound;
-    private Sound jumpSound;
+    private Sound tiroSound;
+    private Sound colisaoSound;
+    private Sound gameSound;
+    private Sound BonusSound;
+
 
     private final AssetManager assetManager;
 
@@ -242,6 +247,7 @@ public class Abismo extends ScreenAdapter {
     private int intervaloTiros = 350;
 
     private Sprite BG;
+    private int i;
     private int gamei;
     private int gamei2;
     private int gamei3;
@@ -252,6 +258,10 @@ public class Abismo extends ScreenAdapter {
     private int ntiros4;
 
     private Array<ParticleEffectPool.PooledEffect> effects = new Array<ParticleEffectPool.PooledEffect>();
+
+    private ParticleEffectPool fireEffectPool;
+    private ParticleEffectPool starEffectPool;
+
 
 
 
@@ -277,8 +287,23 @@ public class Abismo extends ScreenAdapter {
             }
 
             @Override
-            public void jump() {
-                jumpSound.play();
+            public void tiro() {
+                tiroSound.play();
+
+            }
+            @Override
+            public void bonus() {
+                BonusSound.play();
+
+            }
+            @Override
+            public void sound() {
+                gameSound.play();
+
+            }
+            @Override
+            public void colisao() {
+                colisaoSound.play();
 
             }
         };
@@ -322,7 +347,10 @@ public class Abismo extends ScreenAdapter {
 
         coinSound = assetManager.get(AssetDescriptors.COIN);
         loseSound = assetManager.get(AssetDescriptors.LOSE);
-        jumpSound = assetManager.get(AssetDescriptors.JUMP);
+        tiroSound = assetManager.get(AssetDescriptors.TIRO);
+        BonusSound = assetManager.get(AssetDescriptors.BONUS);
+        colisaoSound = assetManager.get(AssetDescriptors.COLISAO);
+        gameSound = assetManager.get(AssetDescriptors.SOUND);
 
         font = assetManager.get(AssetDescriptors.FONT);
 
@@ -366,6 +394,12 @@ public class Abismo extends ScreenAdapter {
         explosion = new Animation(0.2f,
                 gamePlayAtlas.findRegions(RegionNames.EXPLOSAO),
                 Animation.PlayMode.LOOP_PINGPONG);
+
+        ParticleEffect fireEffect = assetManager.get(AssetDescriptors.FIRE);
+        ParticleEffect starEffect = assetManager.get(AssetDescriptors.STAR);
+
+        fireEffectPool = new ParticleEffectPool(fireEffect, 5, 20);
+        starEffectPool = new ParticleEffectPool(starEffect, 5, 10);
 
         jogador = new Image(baldegema1);
         jogador2 = new Image(baldegema2);
@@ -573,6 +607,7 @@ public class Abismo extends ScreenAdapter {
 
             if (startWaitTimer <= 0) {
                 gameState = GameState.PLAYING;
+                listener.sound();
             }
         }
 
@@ -596,6 +631,7 @@ public class Abismo extends ScreenAdapter {
         }
 
         animationTime += delta;
+        i++;
 
         jogador.setPosition(PWbalde, PHbalde);
         jogador2.setPosition(PWbalde, PHbalde2);
@@ -607,6 +643,7 @@ public class Abismo extends ScreenAdapter {
         moverbalde(viewport, delta);
         retsoma();
         atirar(viewport);
+        updateEffects(delta);
         atualizarTiros(delta);
         atualizarTiros2(delta);
         atualizarTiros3(delta);
@@ -631,6 +668,13 @@ public class Abismo extends ScreenAdapter {
 
         floatingScorePool.freeAll(floatingScores);
         floatingScores.clear();
+
+        for (int i = 0; i < effects.size; i++) {
+            ParticleEffectPool.PooledEffect effect = effects.get(i);
+            effect.free();
+            effects.removeIndex(i);
+        }
+
 
         GameManager.INSTANCE.updateHighScore();
         GameManager.INSTANCE.reset();
@@ -685,14 +729,19 @@ public class Abismo extends ScreenAdapter {
 
         batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
 
-        textureExplosion = (TextureRegion) explosion.getKeyFrame(animationTime);
 
-        batch.draw(textureExplosion, 100, 100);
+
+        for (int i = 0; i < effects.size; i++) {
+            ParticleEffectPool.PooledEffect effect = effects.get(i);
+            effect.draw(batch);
+        }
+
 
         batch.draw(gema1, posicaoX1, posicaoY1, gema1WSIZE, gema1HSIZE);
         batch.draw(gema2, posicaoX2, posicaoY2, gema2WSIZE, gema2HSIZE);
         batch.draw(gema3, posicaoX3, posicaoY3, gema3WSIZE, gema3HSIZE);
         batch.draw(gema4, posicaoX4, posicaoY4, gema4WSIZE, gema4HSIZE);
+
 
         batch.draw(badegema1, posicaoXM1, posicaoYM1, badegemaWSIZE, badegemaHSIZE);
         batch.draw(badegema2, posicaoXM2, posicaoYM2, badegemaWSIZE, badegemaHSIZE);
@@ -831,14 +880,18 @@ public class Abismo extends ScreenAdapter {
                     tiro.remove();
                     tiros1.removeValue(tiro, true);
                     ntiros = 0;
+                    velM1 = velM1 + 10;
                     GameManager.INSTANCE.addScore(1);
                     addFloatingScore(1);
+                    listener.bonus();
 
 
                 }else{
                     tiro.remove();
                     tiros1.removeValue(tiro, true);
                     ntiros = ntiros + 1;
+                    spawnFireEffect(posicaoXM1, posicaoYM1);
+                    listener.colisao();
                 }
 
             }
@@ -856,8 +909,10 @@ public class Abismo extends ScreenAdapter {
                     tiro.remove();
                     tiros2.removeValue(tiro, true);
                     ntiros2 = 0;
+                    velM2 = velM2 + 10;
                     GameManager.INSTANCE.addScore(1);
                     addFloatingScore(1);
+                    listener.bonus();
                 }else{
                     tiro.remove();
                     tiros2.removeValue(tiro, true);
@@ -879,8 +934,10 @@ public class Abismo extends ScreenAdapter {
                     tiro.remove();
                     tiros3.removeValue(tiro, true);
                     ntiros3 = 0;
+                    velM3 = velM3 + 10;
                     GameManager.INSTANCE.addScore(1);
                     addFloatingScore(1);
+                    listener.bonus();
                 }else{
                     tiro.remove();
                     tiros3.removeValue(tiro, true);
@@ -902,8 +959,10 @@ public class Abismo extends ScreenAdapter {
                     tiro.remove();
                     tiros4.removeValue(tiro, true);
                     ntiros4 = 0;
+                    velM4 = velM4 + 10;
                     GameManager.INSTANCE.addScore(1);
                     addFloatingScore(1);
+                    listener.bonus();
 
                 }else{
                     tiro.remove();
@@ -973,6 +1032,7 @@ public class Abismo extends ScreenAdapter {
                 & gamei3 == 1
                 & gamei4 == 1) {
             gameState = GameState.GAME_OVER;
+            listener.lose();
 
         }else if (posicaoYM1 < 70){
             gamei = 1;
@@ -1034,25 +1094,25 @@ public class Abismo extends ScreenAdapter {
     private void retsoma(){
 
         if (Intersector.overlaps(baldegemaR1, gemaR1)){
-            qbalde1 = qbalde1 + 1;
+            qbalde1 = qbalde1 + 3;
             posicaoX1 = numeroRandomico.nextInt(500) + (80);
             posicaoY1 = numeroRandomico.nextInt(1300) + (1100);
             listener.hitCoin();
 
         }else if (Intersector.overlaps(baldegemaR2, gemaR2)){
-            qbalde2 = qbalde2 + 1;
+            qbalde2 = qbalde2 + 3;
             posicaoX2 = numeroRandomico.nextInt(500) + (80);
             posicaoY2 = numeroRandomico.nextInt(1500) + (1300);
             listener.hitCoin();
 
         }else if (Intersector.overlaps(baldegemaR3, gemaR3)){
-            qbalde3 = qbalde3 + 1;
+            qbalde3 = qbalde3 + 3;
             posicaoX3 = numeroRandomico.nextInt(500) + (80);
             posicaoY3 = numeroRandomico.nextInt(1600) + (1500);
             listener.hitCoin();
 
         }else if (Intersector.overlaps(baldegemaR4, gemaR4)){
-            qbalde4 = qbalde4 + 1;
+            qbalde4 = qbalde4 + 3;
             posicaoX4 = numeroRandomico.nextInt(500) + (80);
             posicaoY4 = numeroRandomico.nextInt(2000) + (1600);
             listener.hitCoin();
@@ -1089,7 +1149,7 @@ public class Abismo extends ScreenAdapter {
                 cenario.addActor(tiro);
                 ultimoTiro = System.currentTimeMillis();
                 qbalde1 = qbalde1 - 1;
-                listener.jump();
+                listener.tiro();
             }
 
         }
@@ -1124,7 +1184,7 @@ public class Abismo extends ScreenAdapter {
                 cenario.addActor(tiro);
                 ultimoTiro = System.currentTimeMillis();
                 qbalde2 = qbalde2 - 1;
-                listener.jump();
+                listener.tiro();
             }
 
         }
@@ -1158,8 +1218,8 @@ public class Abismo extends ScreenAdapter {
                 tiros3.add(tiro);
                 cenario.addActor(tiro);
                 ultimoTiro = System.currentTimeMillis();
-                qbalde4 = qbalde4 - 1;
-                listener.jump();
+                qbalde3 = qbalde3 - 1;
+                listener.tiro();
             }
 
         }
@@ -1193,14 +1253,40 @@ public class Abismo extends ScreenAdapter {
                 tiros4.add(tiro);
                 cenario.addActor(tiro);
                 ultimoTiro = System.currentTimeMillis();
-                qbalde3 = qbalde3 - 1;
-                listener.jump();
+                qbalde4 = qbalde4 - 1;
+                listener.tiro();
             }
 
         }
 
 
     }
+
+    private void updateEffects(float delta) {
+        for (int i = 0; i < effects.size; i++) {
+            ParticleEffectPool.PooledEffect effect = effects.get(i);
+            effect.update(delta);
+
+            if (effect.isComplete()) {
+                effects.removeIndex(i);
+                effect.free();
+            }
+        }
+    }
+    private void spawnFireEffect(float x, float y) {
+        ParticleEffectPool.PooledEffect effect = createFire(x, y);
+        effects.add(effect);
+    }
+
+    public ParticleEffectPool.PooledEffect createFire(float x, float y) {
+        ParticleEffectPool.PooledEffect effect = fireEffectPool.obtain();
+        effect.setPosition(x, y);
+        effect.start();
+        return effect;
+    }
+
+
+
 
 
     private long ultimoTiro = 0;
