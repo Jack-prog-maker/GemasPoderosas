@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -30,6 +32,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.blackhole.game.AdController;
 import com.blackhole.game.Assets.AssetDescriptors;
 import com.blackhole.game.Assets.RegionNames;
 import com.blackhole.game.DebugCameraController;
@@ -130,7 +133,7 @@ public class Abismo extends ScreenAdapter {
     private Sound loseSound;
     private Sound tiroSound;
     private Sound colisaoSound;
-    private Sound gameSound;
+    private Music gameSound;
     private Sound BonusSound;
 
 
@@ -212,7 +215,7 @@ public class Abismo extends ScreenAdapter {
     private float gemaT4HSIZE = GameConfig.GEMAT4H_SIZE;
 
     private float badegemaWSIZE = GameConfig.BADEGEMASW_SIZE;
-    private float badegemaHSIZE = GameConfig.BADEGEMASW_SIZE;
+    private float badegemaHSIZE = GameConfig.BADEGEMASH_SIZE;
 
 
     private Vector2 touch = new Vector2();
@@ -247,7 +250,6 @@ public class Abismo extends ScreenAdapter {
     private int intervaloTiros = 350;
 
     private Sprite BG;
-    private int i;
     private int gamei;
     private int gamei2;
     private int gamei3;
@@ -257,11 +259,16 @@ public class Abismo extends ScreenAdapter {
     private int ntiros3;
     private int ntiros4;
 
+
     private Array<ParticleEffectPool.PooledEffect> effects = new Array<ParticleEffectPool.PooledEffect>();
+
 
     private ParticleEffectPool fireEffectPool;
     private ParticleEffectPool starEffectPool;
 
+
+    private Array<Texture> explosoesTexturas = new Array<Texture>();
+    private Array<Explosao> explosoes = new Array<Explosao>();
 
 
 
@@ -350,7 +357,10 @@ public class Abismo extends ScreenAdapter {
         tiroSound = assetManager.get(AssetDescriptors.TIRO);
         BonusSound = assetManager.get(AssetDescriptors.BONUS);
         colisaoSound = assetManager.get(AssetDescriptors.COLISAO);
-        gameSound = assetManager.get(AssetDescriptors.SOUND);
+        gameSound = Gdx.audio.newMusic(Gdx.files.internal("sounds/sound.mp3"));
+        gameSound.setLooping(true);
+        gameSound.play();
+
 
         font = assetManager.get(AssetDescriptors.FONT);
 
@@ -360,6 +370,7 @@ public class Abismo extends ScreenAdapter {
 
 
         badegema1 = gamePlayAtlas.findRegion(RegionNames.BADEGEMA1);
+        BG = new Sprite(badegema1);
         badegema2 = gamePlayAtlas.findRegion(RegionNames.BADEGEMA2);
         badegema3 = gamePlayAtlas.findRegion(RegionNames.BADEGEMA3);
         badegema4 = gamePlayAtlas.findRegion(RegionNames.BADEGEMA4);
@@ -380,10 +391,10 @@ public class Abismo extends ScreenAdapter {
         gema3 = gamePlayAtlas.findRegion(RegionNames.GEMA3);
         gema4 = gamePlayAtlas.findRegion(RegionNames.GEMA4);
 
-        gemaT1 = gamePlayAtlas.findRegion(RegionNames.GEMA1);
-        gemaT2 = gamePlayAtlas.findRegion(RegionNames.GEMA2);
-        gemaT3 = gamePlayAtlas.findRegion(RegionNames.GEMA3);
-        gemaT4 = gamePlayAtlas.findRegion(RegionNames.GEMA4);
+        gemaT1 = gamePlayAtlas.findRegion(RegionNames.GEMAT1);
+        gemaT2 = gamePlayAtlas.findRegion(RegionNames.GEMAT2);
+        gemaT3 = gamePlayAtlas.findRegion(RegionNames.GEMAT3);
+        gemaT4 = gamePlayAtlas.findRegion(RegionNames.GEMAT4);
 
         fundo = gamePlayAtlas.findRegion(RegionNames.FUNDO);
         controleD = gamePlayAtlas.findRegion(RegionNames.CONTROLED);
@@ -391,15 +402,11 @@ public class Abismo extends ScreenAdapter {
 
         botaoatirar = gamePlayAtlas.findRegion(RegionNames.BOTAOATIRAR);
 
-        explosion = new Animation(0.2f,
-                gamePlayAtlas.findRegions(RegionNames.EXPLOSAO),
-                Animation.PlayMode.LOOP_PINGPONG);
-
         ParticleEffect fireEffect = assetManager.get(AssetDescriptors.FIRE);
         ParticleEffect starEffect = assetManager.get(AssetDescriptors.STAR);
 
-        fireEffectPool = new ParticleEffectPool(fireEffect, 5, 20);
-        starEffectPool = new ParticleEffectPool(starEffect, 5, 10);
+        fireEffectPool = new ParticleEffectPool(fireEffect, 25, 50);
+        starEffectPool = new ParticleEffectPool(starEffect, 25, 50);
 
         jogador = new Image(baldegema1);
         jogador2 = new Image(baldegema2);
@@ -425,6 +432,11 @@ public class Abismo extends ScreenAdapter {
         hudStage.addActor(gameOverOverlay);
 //        hudStage.setDebugAll(true);
 
+        for (int i = 1; i <= 17; i++) {
+            Texture explosao = new Texture("explosao/explosion-" + i + ".png");
+            explosoesTexturas.add(explosao);
+        }
+
         Gdx.input.setInputProcessor(hudStage);
 
 
@@ -443,10 +455,10 @@ public class Abismo extends ScreenAdapter {
         posicaoXM3 = 400;
         posicaoXM4 = 500;
 
-        posicaoYM1 = 3000;
-        posicaoYM2 = 4000;
-        posicaoYM3 = 5000;
-        posicaoYM4 = 6000;
+        posicaoYM1 = 2000;
+        posicaoYM2 = 2500;
+        posicaoYM3 = 3000;
+        posicaoYM4 = 3500;
 
         PHbalde = 240;
         PHbalde2 = -340;
@@ -497,6 +509,7 @@ public class Abismo extends ScreenAdapter {
     @Override
     public void dispose() {
         batch.dispose();
+
 
 
     }
@@ -590,9 +603,13 @@ public class Abismo extends ScreenAdapter {
         viewport.apply();
         batch.setProjectionMatrix(camera.combined);
         variacao += delta * 10;
+        int r = 0;
         if (variacao > 2) variacao = 0;
         batch.begin();
-
+        BG.setPosition(posicaoXM1, posicaoYM1);
+        BG.setSize(badegemaWSIZE, badegemaHSIZE);
+        BG.setOrigin(0, 0);
+        BG.setRotation(r++);
         drawGamePlay();
 
         batch.end();
@@ -607,7 +624,7 @@ public class Abismo extends ScreenAdapter {
 
             if (startWaitTimer <= 0) {
                 gameState = GameState.PLAYING;
-                listener.sound();
+
             }
         }
 
@@ -630,8 +647,7 @@ public class Abismo extends ScreenAdapter {
             }
         }
 
-        animationTime += delta;
-        i++;
+
 
         jogador.setPosition(PWbalde, PHbalde);
         jogador2.setPosition(PWbalde, PHbalde2);
@@ -643,12 +659,13 @@ public class Abismo extends ScreenAdapter {
         moverbalde(viewport, delta);
         retsoma();
         atirar(viewport);
-        updateEffects(delta);
         atualizarTiros(delta);
         atualizarTiros2(delta);
         atualizarTiros3(delta);
         atualizarTiros4(delta);
         checcolision(delta);
+        updateEffects(delta);
+        atualizarExplosoes(delta);
         gameover();
 
 
@@ -661,10 +678,16 @@ public class Abismo extends ScreenAdapter {
         posicaoY2 = numeroRandomico.nextInt(1500) + (1300);
         posicaoY3 = numeroRandomico.nextInt(1600) + (1500);
         posicaoY4 = numeroRandomico.nextInt(2000) + (1600);
-        posicaoYM1 = numeroRandomico.nextInt(2200) + (2000);
-        posicaoYM2 = numeroRandomico.nextInt(3200) + (3000);
-        posicaoYM3 = numeroRandomico.nextInt(4200) + (4000);
-        posicaoYM4 = numeroRandomico.nextInt(5200) + (5000);
+        posicaoYM1 = numeroRandomico.nextInt(2500) + (2000);
+        posicaoYM2 = numeroRandomico.nextInt(3000) + (2500);
+        posicaoYM3 = numeroRandomico.nextInt(3500) + (3000);
+        posicaoYM4 = numeroRandomico.nextInt(4000) + (3500);
+
+        gamei = 0;
+        gamei2 = 0;
+        gamei3 = 0;
+        gamei4 = 0;
+
 
         floatingScorePool.freeAll(floatingScores);
         floatingScores.clear();
@@ -681,6 +704,7 @@ public class Abismo extends ScreenAdapter {
         startWaitTimer = 3f;
         animationTime = 0f;
         gameState = GameState.READY;
+        gameSound.play();
     }
 
     private void addFloatingScore(int score) {
@@ -730,6 +754,16 @@ public class Abismo extends ScreenAdapter {
         batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
 
 
+        batch.draw(gema1, posicaoX1, posicaoY1, gema1WSIZE, gema1HSIZE);
+        batch.draw(gema2, posicaoX2, posicaoY2, gema2WSIZE, gema2HSIZE);
+        batch.draw(gema3, posicaoX3, posicaoY3, gema3WSIZE, gema3HSIZE);
+        batch.draw(gema4, posicaoX4, posicaoY4, gema4WSIZE, gema4HSIZE);
+
+
+        BG.draw(batch);
+        batch.draw(badegema2, posicaoXM2, posicaoYM2, badegemaWSIZE, badegemaHSIZE);
+        batch.draw(badegema3, posicaoXM3, posicaoYM3, badegemaWSIZE, badegemaHSIZE);
+        batch.draw(badegema4, posicaoXM4, posicaoYM4, badegemaWSIZE, badegemaHSIZE);
 
         for (int i = 0; i < effects.size; i++) {
             ParticleEffectPool.PooledEffect effect = effects.get(i);
@@ -737,16 +771,6 @@ public class Abismo extends ScreenAdapter {
         }
 
 
-        batch.draw(gema1, posicaoX1, posicaoY1, gema1WSIZE, gema1HSIZE);
-        batch.draw(gema2, posicaoX2, posicaoY2, gema2WSIZE, gema2HSIZE);
-        batch.draw(gema3, posicaoX3, posicaoY3, gema3WSIZE, gema3HSIZE);
-        batch.draw(gema4, posicaoX4, posicaoY4, gema4WSIZE, gema4HSIZE);
-
-
-        batch.draw(badegema1, posicaoXM1, posicaoYM1, badegemaWSIZE, badegemaHSIZE);
-        batch.draw(badegema2, posicaoXM2, posicaoYM2, badegemaWSIZE, badegemaHSIZE);
-        batch.draw(badegema3, posicaoXM3, posicaoYM3, badegemaWSIZE, badegemaHSIZE);
-        batch.draw(badegema4, posicaoXM4, posicaoYM4, badegemaWSIZE, badegemaHSIZE);
 
         if (botaon == 4){
             batch.draw(baldegema4, PWbalde, PHbalde4);
@@ -768,6 +792,11 @@ public class Abismo extends ScreenAdapter {
 
 
         batch.draw(botaoatirar, 0, 0);
+
+        for (Explosao exp : explosoes) {
+            int i = exp.getEstagio() - 1;
+            batch.draw(explosoesTexturas.get(i), exp.getX(), exp.getY());
+        }
 
 
 
@@ -860,7 +889,7 @@ public class Abismo extends ScreenAdapter {
         );
 
         botaoatirarR = new Rectangle(
-                0, 0, 218, 220);
+                0, 0, 194, 171);
 
 
 
@@ -876,13 +905,14 @@ public class Abismo extends ScreenAdapter {
             if (Intersector.overlaps(tiroR1, badegemaR1)){
                 if (ntiros == 4){
                     posicaoXM1 = numeroRandomico.nextInt(500) + (80);
-                    posicaoYM1 = numeroRandomico.nextInt(2200) + (2000);
+                    posicaoYM1 = numeroRandomico.nextInt(3000) + (2000);
                     tiro.remove();
                     tiros1.removeValue(tiro, true);
                     ntiros = 0;
-                    velM1 = velM1 + 10;
+                    velM1 = velM1 + 20;
                     GameManager.INSTANCE.addScore(1);
                     addFloatingScore(1);
+                    criarExplosao(badegema1.getRegionX(), badegema1.getRegionY());
                     listener.bonus();
 
 
@@ -890,7 +920,7 @@ public class Abismo extends ScreenAdapter {
                     tiro.remove();
                     tiros1.removeValue(tiro, true);
                     ntiros = ntiros + 1;
-                    spawnFireEffect(posicaoXM1, posicaoYM1);
+                    createFire(500, 500);
                     listener.colisao();
                 }
 
@@ -905,43 +935,21 @@ public class Abismo extends ScreenAdapter {
             if (Intersector.overlaps(tiroR2, badegemaR2)){
                 if (ntiros2 == 4){
                     posicaoXM2 = numeroRandomico.nextInt(500) + (80);
-                    posicaoYM2 = numeroRandomico.nextInt(3200) + (3000);
+                    posicaoYM2 = numeroRandomico.nextInt(3000) + (2000);
                     tiro.remove();
                     tiros2.removeValue(tiro, true);
                     ntiros2 = 0;
-                    velM2 = velM2 + 10;
+                    velM2 = velM2 + 20;
                     GameManager.INSTANCE.addScore(1);
                     addFloatingScore(1);
+                    criarExplosao(posicaoXM1, posicaoYM1);
                     listener.bonus();
                 }else{
                     tiro.remove();
                     tiros2.removeValue(tiro, true);
                     ntiros2 = ntiros2 + 1;
-                }
-
-            }
-
-        }
-        for (Image tiro : tiros3) {
-            // movimenta o tiro em direÃ§Ã£o ao topo da tela
-            float x = tiro.getX();
-            float y = tiro.getY() + velocidadeTiro * delta;
-            tiroR3 = new Rectangle(x, y, gemaT3WSIZE, gemaT3HSIZE);
-            if (Intersector.overlaps(tiroR3, badegemaR3)){
-                if (ntiros3 == 4){
-                    posicaoXM3 = numeroRandomico.nextInt(500) + (80);
-                    posicaoYM3 = numeroRandomico.nextInt(4200) + (4000);
-                    tiro.remove();
-                    tiros3.removeValue(tiro, true);
-                    ntiros3 = 0;
-                    velM3 = velM3 + 10;
-                    GameManager.INSTANCE.addScore(1);
-                    addFloatingScore(1);
-                    listener.bonus();
-                }else{
-                    tiro.remove();
-                    tiros3.removeValue(tiro, true);
-                    ntiros3 = ntiros3 + 1;
+                    createFire(posicaoXM2, posicaoYM2);
+                    listener.colisao();
                 }
 
             }
@@ -951,23 +959,54 @@ public class Abismo extends ScreenAdapter {
             // movimenta o tiro em direÃ§Ã£o ao topo da tela
             float x = tiro.getX();
             float y = tiro.getY() + velocidadeTiro * delta;
+            tiroR3 = new Rectangle(x, y, gemaT3WSIZE, gemaT3HSIZE);
+            if (Intersector.overlaps(tiroR3, badegemaR3)){
+                if (ntiros3 == 4){
+                    posicaoXM3 = numeroRandomico.nextInt(500) + (80);
+                    posicaoYM3 = numeroRandomico.nextInt(3500) + (2500);
+                    tiro.remove();
+                    tiros4.removeValue(tiro, true);
+                    ntiros3 = 0;
+                    velM3 = velM3 + 20;
+                    GameManager.INSTANCE.addScore(1);
+                    addFloatingScore(1);
+                    criarExplosao(badegema1.getRegionWidth(), badegema1.getRegionHeight());
+                    listener.bonus();
+                }else{
+                    tiro.remove();
+                    tiros4.removeValue(tiro, true);
+                    ntiros3 = ntiros3 + 1;
+                    createFire(posicaoXM3, posicaoYM3);
+                    listener.colisao();
+                }
+
+            }
+
+        }
+        for (Image tiro : tiros3) {
+            // movimenta o tiro em direÃ§Ã£o ao topo da tela
+            float x = tiro.getX();
+            float y = tiro.getY() + velocidadeTiro * delta;
             tiroR4 = new Rectangle(x, y, gemaT4WSIZE, gemaT4HSIZE);
             if (Intersector.overlaps(tiroR4, badegemaR4)){
                 if (ntiros4 == 4){
                     posicaoXM4 = numeroRandomico.nextInt(500) + (80);
-                    posicaoYM4 = numeroRandomico.nextInt(5200) + (5000);
+                    posicaoYM4 = numeroRandomico.nextInt(3500) + (2500);
                     tiro.remove();
-                    tiros4.removeValue(tiro, true);
+                    tiros3.removeValue(tiro, true);
                     ntiros4 = 0;
-                    velM4 = velM4 + 10;
+                    velM4 = velM4 + 20;
                     GameManager.INSTANCE.addScore(1);
                     addFloatingScore(1);
+                    criarExplosao(badegemaR4.getX(), badegemaR4.getY());
                     listener.bonus();
 
                 }else{
                     tiro.remove();
-                    tiros4.removeValue(tiro, true);
+                    tiros3.removeValue(tiro, true);
                     ntiros4 = ntiros4 + 1;
+                    createFire(posicaoXM4, posicaoYM4);
+                    listener.colisao();
                 }
 
             }
@@ -1015,33 +1054,45 @@ public class Abismo extends ScreenAdapter {
         }
 
     }
-    private void criarExplosao() {
-        viewport.apply();
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-
-        textureExplosion = (TextureRegion) explosion.getKeyFrame(animationTime);
-
-        batch.draw(textureExplosion, 100, 100);
-
-        batch.end();
+    private void criarExplosao(float x, float y) {
+        // a imagem da explosÃ£o mede 96 por 96 pixels
+        Explosao explosao = new Explosao();
+        explosao.setX(x - 96 / 2);
+        explosao.setY(y - 96 / 2);
+        explosoes.add(explosao);
     }
+
     private void gameover(){
         if (gamei == 1
                 & gamei2 == 1
                 & gamei3 == 1
                 & gamei4 == 1) {
+            PHbalde = -400;
+            PHbalde2 = -400;
+            PHbalde3 = -400;
+            PHbalde4 = -400;
             gameState = GameState.GAME_OVER;
             listener.lose();
+            gameSound.stop();
+
+
 
         }else if (posicaoYM1 < 70){
             gamei = 1;
+            posicaoYM1 = 1500;
+            posicaoXM1 = 1500;
         }else if (posicaoYM2 < 70){
             gamei2 = 1;
+            posicaoYM2 = 1500;
+            posicaoXM2 = 1500;
         }else if (posicaoYM3 < 70){
             gamei3 = 1;
+            posicaoYM3 = 1500;
+            posicaoXM3 = 1500;
         }else if (posicaoYM4 < 70){
-            gamei4 = 4;
+            gamei4 = 1;
+            posicaoYM4 = 1500;
+            posicaoXM4 = 1500;
         }
     }
 
@@ -1129,7 +1180,6 @@ public class Abismo extends ScreenAdapter {
             float x = tiro.getX();
             float y = tiro.getY() + velocidadeTiro * delta;
             tiro.setPosition(x, y);
-            tiro.setSize(gemaT1WSIZE, gemaT1HSIZE);
             // verifica se o tiro jÃ¡ saiu da tela
             if (tiro.getY() > camera.viewportHeight) {
                 tiro.remove();
@@ -1164,7 +1214,6 @@ public class Abismo extends ScreenAdapter {
             float x = tiro.getX();
             float y = tiro.getY() + velocidadeTiro * delta;
             tiro.setPosition(x, y);
-            tiro.setSize(gemaT2WSIZE, gemaT2HSIZE);
             // verifica se o tiro jÃ¡ saiu da tela
             if (tiro.getY() > camera.viewportHeight) {
                 tiro.remove();
@@ -1199,7 +1248,6 @@ public class Abismo extends ScreenAdapter {
             float x = tiro.getX();
             float y = tiro.getY() + velocidadeTiro * delta;
             tiro.setPosition(x, y);
-            tiro.setSize(gemaT3WSIZE, gemaT3HSIZE);
             // verifica se o tiro jÃ¡ saiu da tela
             if (tiro.getY() > camera.viewportHeight) {
                 tiro.remove();
@@ -1234,7 +1282,6 @@ public class Abismo extends ScreenAdapter {
             float x = tiro.getX();
             float y = tiro.getY() + velocidadeTiro * delta;
             tiro.setPosition(x, y);
-            tiro.setSize(gemaT4WSIZE, gemaT4HSIZE);
             // verifica se o tiro jÃ¡ saiu da tela
             if (tiro.getY() > camera.viewportHeight) {
                 tiro.remove();
@@ -1275,16 +1322,26 @@ public class Abismo extends ScreenAdapter {
     }
     private void spawnFireEffect(float x, float y) {
         ParticleEffectPool.PooledEffect effect = createFire(x, y);
-        effects.add(effect);
+
     }
 
     public ParticleEffectPool.PooledEffect createFire(float x, float y) {
         ParticleEffectPool.PooledEffect effect = fireEffectPool.obtain();
         effect.setPosition(x, y);
         effect.start();
+        effects.add(effect);
         return effect;
     }
 
+    private void atualizarExplosoes(float delta) {
+        for (Explosao exp : explosoes) {
+            exp.atualizar(delta);
+            // verifica se a explosÃ£o jÃ¡ passou todos os estÃ¡gios
+            if (exp.getEstagio() > 17) {
+                explosoes.removeValue(exp, true);
+            }
+        }
+    }
 
 
 

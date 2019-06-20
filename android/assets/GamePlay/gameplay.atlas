@@ -1,5 +1,5 @@
 gameplay.png
-size: 1019, 1562
+size: 944, 1340
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -94,163 +94,79 @@ botaoatirar
   orig: 194, 171
   offset: 0, 0
   index: -1
-explosion (1)
-  rotate: false
-  xy: 827, 419
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (2)
-  rotate: false
-  xy: 923, 419
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (3)
-  rotate: false
-  xy: 0, 601
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (4)
-  rotate: false
-  xy: 96, 601
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (5)
-  rotate: false
-  xy: 192, 601
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (6)
-  rotate: false
-  xy: 288, 601
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (7)
-  rotate: false
-  xy: 384, 601
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (8)
-  rotate: false
-  xy: 480, 601
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (9)
-  rotate: false
-  xy: 576, 601
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (10)
-  rotate: false
-  xy: 672, 601
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (11)
-  rotate: false
-  xy: 768, 601
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (12)
-  rotate: false
-  xy: 864, 601
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (13)
-  rotate: false
-  xy: 0, 697
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (14)
-  rotate: false
-  xy: 96, 697
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (15)
-  rotate: false
-  xy: 192, 697
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-explosion (16)
-  rotate: false
-  xy: 288, 697
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
 fundo
   rotate: false
-  xy: 384, 697
-  size: 626, 626
-  orig: 626, 626
+  xy: 0, 601
+  size: 500, 500
+  orig: 500, 500
   offset: 0, 0
   index: -1
 gema1
   rotate: false
-  xy: 0, 1323
+  xy: 500, 601
   size: 123, 186
   orig: 123, 186
   offset: 0, 0
   index: -1
 gema2
   rotate: false
-  xy: 123, 1323
+  xy: 623, 601
   size: 144, 131
   orig: 144, 131
   offset: 0, 0
   index: -1
 gema3
   rotate: false
-  xy: 267, 1323
+  xy: 767, 601
   size: 64, 140
   orig: 64, 140
   offset: 0, 0
   index: -1
 gema4
   rotate: false
-  xy: 331, 1323
+  xy: 0, 1101
   size: 124, 124
   orig: 124, 124
   offset: 0, 0
   index: -1
+gemaT1
+  rotate: false
+  xy: 124, 1101
+  size: 25, 58
+  orig: 25, 58
+  offset: 0, 0
+  index: -1
+gemaT2
+  rotate: false
+  xy: 149, 1101
+  size: 37, 30
+  orig: 37, 30
+  offset: 0, 0
+  index: -1
+gemaT3
+  rotate: false
+  xy: 186, 1101
+  size: 21, 71
+  orig: 21, 71
+  offset: 0, 0
+  index: -1
+gemaT4
+  rotate: false
+  xy: 207, 1101
+  size: 62, 61
+  orig: 62, 61
+  offset: 0, 0
+  index: -1
 moverD
   rotate: false
-  xy: 455, 1323
+  xy: 269, 1101
   size: 244, 239
   orig: 244, 239
   offset: 0, 0
   index: -1
 moverE
   rotate: false
-  xy: 699, 1323
+  xy: 513, 1101
   size: 244, 239
   orig: 244, 239
   offset: 0, 0

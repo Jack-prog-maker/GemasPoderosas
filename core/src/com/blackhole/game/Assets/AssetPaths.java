@@ -19,8 +19,6 @@ public class AssetPaths {
 
     public static final String BONUS_SOUND = "sounds/bonus.mp3";
 
-    public static final String SOUND = "sounds/sound.mp3";
-
     public static final String FIRE = "effects/fire.pfx";
 
     public static final String STAR = "effects/star.pfx";

@@ -12,6 +12,7 @@ public class BadeSpace extends GameBase {
 
     @Override
     public void postCreate() {
+        getAdController().showBanner();
         setScreen(new LoadingScreen(this));
     }
 

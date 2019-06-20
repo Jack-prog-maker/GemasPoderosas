@@ -23,6 +23,10 @@ public class RegionNames {
     public static final String GEMA2 = "gema2";
     public static final String GEMA3 = "gema3";
     public static final String GEMA4 = "gema4";
+    public static final String GEMAT1 = "gemaT1";
+    public static final String GEMAT2 = "gemaT2";
+    public static final String GEMAT3 = "gemaT3";
+    public static final String GEMAT4 = "gemaT4";
     public static final String FUNDO = "fundo";
     public static final String CONTROLED = "moverD";
     public static final String CONTROLEE = "moverE";

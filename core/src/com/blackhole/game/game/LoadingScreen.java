@@ -80,7 +80,6 @@ public class LoadingScreen extends ScreenAdapter {
         assetManager.load(AssetDescriptors.TIRO);
         assetManager.load(AssetDescriptors.COLISAO);
         assetManager.load(AssetDescriptors.BONUS);
-        assetManager.load(AssetDescriptors.SOUND);
         assetManager.load(AssetDescriptors.FIRE);
         assetManager.load(AssetDescriptors.STAR);
 

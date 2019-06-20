@@ -59,9 +59,9 @@ public class MenuOverlay extends Table {
         updateLabel();
         scoreTable.add(highScoreLabel);
 
-        buttonTable.add(playButton).left().expandX();
-        buttonTable.add(scoreTable).center().expandX();
-        buttonTable.add(quitButton).right().expandX();
+        buttonTable.add(playButton).left().height(800);
+        buttonTable.add(scoreTable).center().height(800);
+        buttonTable.add(quitButton).right().height(800);
 
         add(logoTable).top().grow().row();
         add(buttonTable).grow().center().row();

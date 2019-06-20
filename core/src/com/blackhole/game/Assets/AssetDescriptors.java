@@ -35,9 +35,6 @@ public class AssetDescriptors {
     public static final AssetDescriptor<Sound> BONUS =
             new AssetDescriptor<Sound>(AssetPaths.BONUS_SOUND, Sound.class);
 
-    public static final AssetDescriptor<Sound> SOUND =
-            new AssetDescriptor<Sound>(AssetPaths.SOUND, Sound.class);
-
     public static final AssetDescriptor<ParticleEffect> FIRE =
             new AssetDescriptor<ParticleEffect>(AssetPaths.FIRE, ParticleEffect.class);
 
